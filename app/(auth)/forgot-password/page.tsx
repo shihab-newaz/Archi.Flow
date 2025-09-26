@@ -18,9 +18,11 @@ const ForgotPasswordPage = () => {
       <Button
         asChild
         variant="ghost"
-        leftIcon={<ArrowLeft className="h-4 w-4" aria-hidden />}
       >
-        <Link href="/login">Back to sign in</Link>
+        <Link href="/login">
+          <ArrowLeft className="h-4 w-4 mr-2" aria-hidden />
+          Back to sign in
+        </Link>
       </Button>
     </div>
   )

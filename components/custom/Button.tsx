@@ -14,19 +14,29 @@ interface ButtonProps extends React.ComponentProps<typeof PrimitiveButton> {
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { children, className, disabled, isLoading, leftIcon, rightIcon, ...props },
+    { children, className, disabled, isLoading, leftIcon, rightIcon, asChild, ...props },
     ref
   ) => {
+    // When asChild is true, don't render icons as they should be part of the child element
+    const shouldShowIcons = !asChild && !isLoading
+
     return (
       <PrimitiveButton
         ref={ref}
         className={cn('gap-2', className)}
         disabled={disabled || isLoading}
+        asChild={asChild}
         {...props}
       >
-        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : leftIcon}
-        {children}
-        {rightIcon}
+        {asChild ? (
+          children
+        ) : (
+          <>
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : leftIcon}
+            {children}
+            {rightIcon}
+          </>
+        )}
       </PrimitiveButton>
     )
   }
