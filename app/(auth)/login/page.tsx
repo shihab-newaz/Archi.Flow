@@ -36,14 +36,12 @@ const LoginPage = () => {
         </div>
       }
       illustration={
-        <div className="space-y-6 text-primary dark:text-primary-foreground">
-          <h2 className="text-3xl font-semibold leading-tight lg:text-4xl">
-            Build trust with seamless access
-          </h2>
-          <p className="text-base text-muted-foreground dark:text-muted">
-            Single sign-on, compliant backups, and reliable monitoring keep your
-            institution running smoothly.
-          </p>
+        <div className="flex items-center justify-center">
+          <img
+            src="/file.svg"
+            alt="Placeholder illustration"
+            className="mx-auto w-64 max-w-full opacity-90"
+          />
         </div>
       }
     >

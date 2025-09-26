@@ -36,14 +36,12 @@ const RegisterPage = () => {
         </div>
       }
       illustration={
-        <div className="space-y-6 text-primary dark:text-primary-foreground">
-          <h2 className="text-3xl font-semibold leading-tight lg:text-4xl">
-            Onboard students and staff effortlessly
-          </h2>
-          <p className="text-base text-muted-foreground dark:text-muted">
-            Automate communication, track progress, and deliver personalised
-            learning journeys.
-          </p>
+        <div className="flex items-center justify-center">
+          <img
+            src="/file.svg"
+            alt="Placeholder illustration"
+            className="mx-auto w-64 max-w-full opacity-90"
+          />
         </div>
       }
     >
