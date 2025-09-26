@@ -1,12 +1,30 @@
 'use client'
 
-import React, { useEffect, PropsWithChildren } from 'react'
+import { PropsWithChildren, useEffect, useState } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Toaster } from 'sonner'
+
+import { ThemeProvider } from '@/hooks/use-theme'
 
 export default function ClientProviders({ children }: PropsWithChildren) {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: 1,
+            refetchOnWindowFocus: false,
+            staleTime: 60_000,
+          },
+          mutations: {
+            retry: 0,
+          },
+        },
+      })
+  )
+
   useEffect(() => {
-    // Only start MSW in development
     if (process.env.NODE_ENV === 'development') {
-      // Dynamically import to avoid including MSW in production bundles
       import('../../mocks/browser')
         .then(({ startWorker }) => {
           startWorker().catch((err: unknown) => {
@@ -21,5 +39,12 @@ export default function ClientProviders({ children }: PropsWithChildren) {
     }
   }, [])
 
-  return <>{children}</>
+  return (
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        {children}
+        <Toaster />
+      </QueryClientProvider>
+    </ThemeProvider>
+  )
 }

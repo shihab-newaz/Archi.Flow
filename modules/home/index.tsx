@@ -1,38 +1,106 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { 
-  Book, BookOpen, Users, Calendar, Home, Settings, LogOut, Bell, Search, User, Clock, Award, ChevronRight, Menu, X 
-} from 'lucide-react';
+import React, { useState } from 'react'
+import {
+  Book,
+  BookOpen,
+  Users,
+  Calendar,
+  Home,
+  Settings,
+  LogOut,
+  Bell,
+  Search,
+  User,
+  Clock,
+  Award,
+  ChevronRight,
+  Menu,
+  X,
+} from 'lucide-react'
 
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent,CardFooter } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 
 interface Course {
-  id: number;
-  title: string;
-  instructor: string;
-  progress: number;
-  duration: string;
-  students: number;
-  category: string;
+  id: number
+  title: string
+  instructor: string
+  progress: number
+  duration: string
+  students: number
+  category: string
 }
 
 export default function Homepage() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [activeSection, setActiveSection] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [activeSection, setActiveSection] = useState('dashboard')
 
   const courses: Course[] = [
-    { id: 1, title: 'Quran Recitation & Tajweed', instructor: 'Sheikh Ahmad Hassan', progress: 65, duration: '12 weeks', students: 234, category: 'Quran Studies' },
-    { id: 2, title: 'Introduction to Hadith Sciences', instructor: 'Dr. Fatima Al-Zahra', progress: 30, duration: '8 weeks', students: 189, category: 'Hadith' },
-    { id: 3, title: 'Islamic History: The Prophets', instructor: 'Ustadh Ibrahim Malik', progress: 80, duration: '10 weeks', students: 456, category: 'History' },
-    { id: 4, title: 'Arabic Language Fundamentals', instructor: 'Sister Maryam Abdullah', progress: 45, duration: '16 weeks', students: 312, category: 'Arabic' },
-    { id: 5, title: 'Fiqh: Islamic Jurisprudence', instructor: 'Sheikh Omar Suleiman', progress: 20, duration: '14 weeks', students: 278, category: 'Fiqh' },
-    { id: 6, title: 'Seerah: Life of Prophet Muhammad ﷺ', instructor: 'Dr. Yasir Qadhi', progress: 90, duration: '6 weeks', students: 567, category: 'Seerah' },
-  ];
+    {
+      id: 1,
+      title: 'Quran Recitation & Tajweed',
+      instructor: 'Sheikh Ahmad Hassan',
+      progress: 65,
+      duration: '12 weeks',
+      students: 234,
+      category: 'Quran Studies',
+    },
+    {
+      id: 2,
+      title: 'Introduction to Hadith Sciences',
+      instructor: 'Dr. Fatima Al-Zahra',
+      progress: 30,
+      duration: '8 weeks',
+      students: 189,
+      category: 'Hadith',
+    },
+    {
+      id: 3,
+      title: 'Islamic History: The Prophets',
+      instructor: 'Ustadh Ibrahim Malik',
+      progress: 80,
+      duration: '10 weeks',
+      students: 456,
+      category: 'History',
+    },
+    {
+      id: 4,
+      title: 'Arabic Language Fundamentals',
+      instructor: 'Sister Maryam Abdullah',
+      progress: 45,
+      duration: '16 weeks',
+      students: 312,
+      category: 'Arabic',
+    },
+    {
+      id: 5,
+      title: 'Fiqh: Islamic Jurisprudence',
+      instructor: 'Sheikh Omar Suleiman',
+      progress: 20,
+      duration: '14 weeks',
+      students: 278,
+      category: 'Fiqh',
+    },
+    {
+      id: 6,
+      title: 'Seerah: Life of Prophet Muhammad ﷺ',
+      instructor: 'Dr. Yasir Qadhi',
+      progress: 90,
+      duration: '6 weeks',
+      students: 567,
+      category: 'Seerah',
+    },
+  ]
 
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
@@ -41,7 +109,7 @@ export default function Homepage() {
     { id: 'community', label: 'Community', icon: Users },
     { id: 'calendar', label: 'Calendar', icon: Calendar },
     { id: 'settings', label: 'Settings', icon: Settings },
-  ];
+  ]
 
   return (
     <div className="min-h-screen bg-background">
@@ -54,10 +122,16 @@ export default function Homepage() {
               size="icon"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
-              {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {sidebarOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </Button>
             <div>
-              <h1 className="text-lg font-semibold text-foreground">Noor Academy</h1>
+              <h1 className="text-lg font-semibold text-foreground">
+                Noor Academy
+              </h1>
               <p className="text-xs text-muted-foreground">نور أكاديمية</p>
             </div>
           </div>
@@ -91,15 +165,19 @@ export default function Homepage() {
 
       <div className="flex pt-16">
         {/* Sidebar */}
-        <aside className={`transition-all duration-300 bg-background border-r border-border fixed top-16 bottom-0 overflow-hidden ${sidebarOpen ? 'w-64' : 'w-0'}`}>
+        <aside
+          className={`transition-all duration-300 bg-background border-r border-border fixed top-16 bottom-0 overflow-hidden ${sidebarOpen ? 'w-64' : 'w-0'}`}
+        >
           <nav className="p-4">
             <ul className="space-y-2">
               {sidebarItems.map((item) => {
-                const Icon = item.icon;
+                const Icon = item.icon
                 return (
                   <li key={item.id}>
                     <Button
-                      variant={activeSection === item.id ? 'secondary' : 'ghost'}
+                      variant={
+                        activeSection === item.id ? 'secondary' : 'ghost'
+                      }
                       className="w-full justify-start space-x-3"
                       onClick={() => setActiveSection(item.id)}
                     >
@@ -107,12 +185,15 @@ export default function Homepage() {
                       <span className="text-sm font-medium">{item.label}</span>
                     </Button>
                   </li>
-                );
+                )
               })}
             </ul>
 
             <div className="mt-8 pt-8 border-t border-border">
-              <Button variant="ghost" className="w-full justify-start space-x-3">
+              <Button
+                variant="ghost"
+                className="w-full justify-start space-x-3"
+              >
                 <LogOut className="w-5 h-5" />
                 <span className="text-sm font-medium">Logout</span>
               </Button>
@@ -121,11 +202,17 @@ export default function Homepage() {
         </aside>
 
         {/* Main Content */}
-        <main className={`flex-1 transition-all duration-300 p-8 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
+        <main
+          className={`flex-1 transition-all duration-300 p-8 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}
+        >
           {/* Welcome Section */}
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-1">Assalamu Alaikum, Ahmad</h2>
-            <p className="text-muted-foreground">Continue your journey in Islamic knowledge</p>
+            <h2 className="text-2xl font-semibold text-foreground mb-1">
+              Assalamu Alaikum, Ahmad
+            </h2>
+            <p className="text-muted-foreground">
+              Continue your journey in Islamic knowledge
+            </p>
           </div>
 
           {/* Stats Cards */}
@@ -135,7 +222,9 @@ export default function Homepage() {
                 <Clock className="w-8 h-8 text-green-600" />
                 <span className="text-2xl font-bold text-foreground">124</span>
               </CardContent>
-              <CardFooter className="text-sm text-muted-foreground">Hours Learned</CardFooter>
+              <CardFooter className="text-sm text-muted-foreground">
+                Hours Learned
+              </CardFooter>
             </Card>
 
             <Card>
@@ -143,7 +232,9 @@ export default function Homepage() {
                 <Book className="w-8 h-8 text-blue-600" />
                 <span className="text-2xl font-bold text-foreground">6</span>
               </CardContent>
-              <CardFooter className="text-sm text-muted-foreground">Active Courses</CardFooter>
+              <CardFooter className="text-sm text-muted-foreground">
+                Active Courses
+              </CardFooter>
             </Card>
 
             <Card>
@@ -151,7 +242,9 @@ export default function Homepage() {
                 <Award className="w-8 h-8 text-yellow-600" />
                 <span className="text-2xl font-bold text-foreground">3</span>
               </CardContent>
-              <CardFooter className="text-sm text-muted-foreground">Certificates</CardFooter>
+              <CardFooter className="text-sm text-muted-foreground">
+                Certificates
+              </CardFooter>
             </Card>
 
             <Card>
@@ -159,15 +252,23 @@ export default function Homepage() {
                 <Users className="w-8 h-8 text-purple-600" />
                 <span className="text-2xl font-bold text-foreground">89</span>
               </CardContent>
-              <CardFooter className="text-sm text-muted-foreground">Study Partners</CardFooter>
+              <CardFooter className="text-sm text-muted-foreground">
+                Study Partners
+              </CardFooter>
             </Card>
           </div>
 
           {/* Courses Section */}
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-foreground">Your Courses</h3>
-              <Button variant="link" size="sm" className="flex items-center space-x-1">
+              <h3 className="text-xl font-semibold text-foreground">
+                Your Courses
+              </h3>
+              <Button
+                variant="link"
+                size="sm"
+                className="flex items-center space-x-1"
+              >
                 <span>View All</span>
                 <ChevronRight className="w-4 h-4" />
               </Button>
@@ -175,15 +276,22 @@ export default function Homepage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {courses.map((course) => (
-                <Card key={course.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <Card
+                  key={course.id}
+                  className="overflow-hidden hover:shadow-lg transition-shadow"
+                >
                   <div className="h-32 bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center">
                     <BookOpen className="w-12 h-12 text-green-600" />
                   </div>
 
                   <CardContent>
                     <Badge variant="secondary">{course.category}</Badge>
-                    <h4 className="text-base font-semibold text-foreground mt-1 mb-2">{course.title}</h4>
-                    <p className="text-sm text-muted-foreground mb-4">{course.instructor}</p>
+                    <h4 className="text-base font-semibold text-foreground mt-1 mb-2">
+                      {course.title}
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {course.instructor}
+                    </p>
 
                     <div className="space-y-3">
                       <div>
@@ -191,7 +299,10 @@ export default function Homepage() {
                           <span>Progress</span>
                           <span>{course.progress}%</span>
                         </div>
-                        <Progress value={course.progress} className="h-2 rounded-full" />
+                        <Progress
+                          value={course.progress}
+                          className="h-2 rounded-full"
+                        />
                       </div>
 
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -217,5 +328,5 @@ export default function Homepage() {
         </main>
       </div>
     </div>
-  );
+  )
 }

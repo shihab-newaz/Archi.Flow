@@ -1,5 +1,5 @@
-import Homepage from "@/modules/home";
+import Homepage from '@/modules/home'
 
 export default function Home() {
-  return <Homepage />;
+  return <Homepage />
 }

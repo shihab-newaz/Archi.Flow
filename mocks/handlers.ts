@@ -11,9 +11,33 @@ export interface Course {
 }
 
 const courses: Course[] = [
-  { id: 1, title: 'Quran Recitation & Tajweed', instructor: 'Sheikh Ahmad Hassan', progress: 65, duration: '12 weeks', students: 234, category: 'Quran Studies' },
-  { id: 2, title: 'Introduction to Hadith Sciences', instructor: 'Dr. Fatima Al-Zahra', progress: 30, duration: '8 weeks', students: 189, category: 'Hadith' },
-  { id: 3, title: 'Islamic History: The Prophets', instructor: 'Ustadh Ibrahim Malik', progress: 80, duration: '10 weeks', students: 456, category: 'History' },
+  {
+    id: 1,
+    title: 'Quran Recitation & Tajweed',
+    instructor: 'Sheikh Ahmad Hassan',
+    progress: 65,
+    duration: '12 weeks',
+    students: 234,
+    category: 'Quran Studies',
+  },
+  {
+    id: 2,
+    title: 'Introduction to Hadith Sciences',
+    instructor: 'Dr. Fatima Al-Zahra',
+    progress: 30,
+    duration: '8 weeks',
+    students: 189,
+    category: 'Hadith',
+  },
+  {
+    id: 3,
+    title: 'Islamic History: The Prophets',
+    instructor: 'Ustadh Ibrahim Malik',
+    progress: 80,
+    duration: '10 weeks',
+    students: 456,
+    category: 'History',
+  },
 ]
 
 export const handlers = [
@@ -26,7 +50,8 @@ export const handlers = [
   http.get('/api/courses/:id', ({ params }) => {
     const { id } = params as Record<string, string>
     const course = courses.find((c) => String(c.id) === String(id))
-    if (!course) return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+    if (!course)
+      return HttpResponse.json({ message: 'Not found' }, { status: 404 })
     return HttpResponse.json(course)
   }),
 

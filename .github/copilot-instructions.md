@@ -2,13 +2,13 @@
 
 ## Project Configuration
 
-* **Framework**: Next.js 15+ with App Router
-* **Language**: TypeScript (strict mode)
-* **Styling**: Tailwind CSS with shadcn/ui
-* **State Management**: Zustand for client-side state
-* **Data Fetching**: TanStack Query (React Query)
-* **UI Components**: shadcn/ui primitives
-* **React Version**: 19 (with inherent compiler optimizations)
+- **Framework**: Next.js 15+ with App Router
+- **Language**: TypeScript (strict mode)
+- **Styling**: Tailwind CSS with shadcn/ui
+- **State Management**: Zustand for client-side state
+- **Data Fetching**: TanStack Query (React Query)
+- **UI Components**: shadcn/ui primitives
+- **React Version**: 19 (with inherent compiler optimizations)
 
 ---
 
@@ -60,14 +60,14 @@ public/
 
 **Key Notes on Folder Strategy:**
 
-* `modules/` contain **business logic** (state, hooks, API calls).
-* `app/` only contains **routing, layouts, and optional SSR data fetching**.
-* `components/ui/` only contains **direct shadcn primitives**.
-* `components/custom/` contains **enhanced components built from shadcn primitives** for reusability.
-* Protected routes `(protected)` ensure **authentication gating**, while `(auth)` is for public auth pages.
-* `lib/apiClient/` only defines the **API client instance** (Axios or fetch wrapper).
-* `lib/services/` defines **service functions for endpoints**, using `apiClient`.
-* `store/zustand/` holds all **Zustand stores** for client-side state.
+- `modules/` contain **business logic** (state, hooks, API calls).
+- `app/` only contains **routing, layouts, and optional SSR data fetching**.
+- `components/ui/` only contains **direct shadcn primitives**.
+- `components/custom/` contains **enhanced components built from shadcn primitives** for reusability.
+- Protected routes `(protected)` ensure **authentication gating**, while `(auth)` is for public auth pages.
+- `lib/apiClient/` only defines the **API client instance** (Axios or fetch wrapper).
+- `lib/services/` defines **service functions for endpoints**, using `apiClient`.
+- `store/zustand/` holds all **Zustand stores** for client-side state.
 
 ---
 
@@ -75,36 +75,36 @@ public/
 
 ### TypeScript
 
-* Use strict TS configuration (`strict: true`)
-* Always define interfaces for objects, props, and store state
-* Prefer `interface` over `type` for object shapes
-* Explicitly type return values for all functions
-* Enable strict null checks
+- Use strict TS configuration (`strict: true`)
+- Always define interfaces for objects, props, and store state
+- Prefer `interface` over `type` for object shapes
+- Explicitly type return values for all functions
+- Enable strict null checks
 
 ---
 
 ### Component Architecture
 
-* **Default Behavior**: Use shadcn/ui primitives directly
-* **Custom Components**: Use only if reusability or composition is needed; place in `components/custom/`
-* **Styling**: Follow shadcn primitives for all styling; avoid arbitrary class overrides
-* **React 19 Considerations**: Leverage automatic compiler optimizations, avoid unnecessary memoization unless profiling shows a benefit
+- **Default Behavior**: Use shadcn/ui primitives directly
+- **Custom Components**: Use only if reusability or composition is needed; place in `components/custom/`
+- **Styling**: Follow shadcn primitives for all styling; avoid arbitrary class overrides
+- **React 19 Considerations**: Leverage automatic compiler optimizations, avoid unnecessary memoization unless profiling shows a benefit
 
 ---
 
 ### State Management (Zustand)
 
-* Keep **stores small and focused**
-* Use TypeScript interfaces for store states
-* Implement immutable state updates
-* Use selectors for component subscriptions
+- Keep **stores small and focused**
+- Use TypeScript interfaces for store states
+- Implement immutable state updates
+- Use selectors for component subscriptions
 
 ```typescript
 interface UserStore {
-  user: User | null;
-  isLoading: boolean;
-  setUser: (user: User) => void;
-  clearUser: () => void;
+  user: User | null
+  isLoading: boolean
+  setUser: (user: User) => void
+  clearUser: () => void
 }
 ```
 
@@ -112,40 +112,40 @@ interface UserStore {
 
 ### API Operations (TanStack Query)
 
-* `lib/apiClient/` defines the API client (baseURL, headers, interceptors)
-* `lib/services/` defines service functions using the apiClient for endpoints
-* Components import service functions and use React Query hooks for fetching/mutations
-* Use consistent query keys and hierarchical structure
-* Implement optimistic updates where appropriate
-* Handle errors and retries properly
-* Use query invalidation for dependent data updates
+- `lib/apiClient/` defines the API client (baseURL, headers, interceptors)
+- `lib/services/` defines service functions using the apiClient for endpoints
+- Components import service functions and use React Query hooks for fetching/mutations
+- Use consistent query keys and hierarchical structure
+- Implement optimistic updates where appropriate
+- Handle errors and retries properly
+- Use query invalidation for dependent data updates
 
 ```typescript
 // lib/apiClient/apiClient.ts
-import axios from 'axios';
+import axios from 'axios'
 
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: { 'Content-Type': 'application/json' },
-});
+})
 
 // lib/services/userService.ts
-import { apiClient } from '../apiClient/apiClient';
+import { apiClient } from '../apiClient/apiClient'
 
 export const getUser = async (id: string) => {
-  const response = await apiClient.get(`/users/${id}`);
-  return response.data;
-};
+  const response = await apiClient.get(`/users/${id}`)
+  return response.data
+}
 ```
 
 ---
 
 ### Custom Components Guidelines
 
-* Extend **shadcn primitives**, don’t replace them
-* Prefer **composition over inheritance**
-* Include proper TypeScript props and accessibility attributes
-* Use `forwardRef` when needed for primitive integration
+- Extend **shadcn primitives**, don’t replace them
+- Prefer **composition over inheritance**
+- Include proper TypeScript props and accessibility attributes
+- Use `forwardRef` when needed for primitive integration
 
 ```typescript
 interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -175,35 +175,35 @@ const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
 
 ### Next.js 15 Patterns
 
-* App Router conventions for `app/`
-* Use **Server Components** by default, Client Components only when needed
-* Implement `loading.tsx` and `error.tsx` per folder for UX consistency
-* Fetch data **server-side if possible**; otherwise client-side with React Query
-* Keep routing and SSR logic in `app/`, leave **business logic to `modules/`**
+- App Router conventions for `app/`
+- Use **Server Components** by default, Client Components only when needed
+- Implement `loading.tsx` and `error.tsx` per folder for UX consistency
+- Fetch data **server-side if possible**; otherwise client-side with React Query
+- Keep routing and SSR logic in `app/`, leave **business logic to `modules/`**
 
 ---
 
 ### Error Handling
 
-* Implement error boundaries at module or page level
-* Use try-catch for async operations
-* Provide meaningful user messages and log for debugging
+- Implement error boundaries at module or page level
+- Use try-catch for async operations
+- Provide meaningful user messages and log for debugging
 
 ---
 
 ### Performance & React 19
 
-* Compiler optimizations handle most re-renders automatically
-* Use proper `key` props in lists
-* Optimize images with `next/image`
-* Implement lazy loading via `dynamic` imports
-* Avoid unnecessary `React.memo`, `useMemo`, `useCallback` unless profiling shows a benefit
+- Compiler optimizations handle most re-renders automatically
+- Use proper `key` props in lists
+- Optimize images with `next/image`
+- Implement lazy loading via `dynamic` imports
+- Avoid unnecessary `React.memo`, `useMemo`, `useCallback` unless profiling shows a benefit
 
 ---
 
 ### Style Guidelines
 
-* **Always start with shadcn primitives**
-* Custom components are **allowed only if composition is needed**
-* Maintain **consistency across modules**
-* Tailwind utility classes should complement primitives, not replace them
+- **Always start with shadcn primitives**
+- Custom components are **allowed only if composition is needed**
+- Maintain **consistency across modules**
+- Tailwind utility classes should complement primitives, not replace them
