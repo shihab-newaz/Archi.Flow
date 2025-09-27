@@ -5,7 +5,7 @@ import { BadgeCheck, BellRing } from 'lucide-react'
 import { AuthShell } from '@/components/custom/AuthShell'
 import { Button } from '@/components/custom/Button'
 import { ThemeToggle } from '@/components/custom/ThemeToggle'
-import { RegisterForm } from '@/modules/auth/components/RegisterForm'
+import { RegisterForm } from '@/features/auth/components/RegisterForm'
 
 export const metadata: Metadata = {
   title: 'Create account | Noor Academy LMS',

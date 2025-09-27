@@ -102,6 +102,14 @@ const apiFetch = async <TResponse, TBody = unknown>(
 
   const target = path.startsWith('http') ? path : `${API_BASE_URL}${path}`
 
+  // Helpful debug logging in development so we can see exact request targets
+  if (process.env.NODE_ENV === 'development') {
+    try {
+      // eslint-disable-next-line no-console
+      console.debug('[apiClient] Request target:', target)
+    } catch {}
+  }
+
   const response = await fetch(target, {
     ...init,
     method: init.method ?? (json ? 'POST' : 'GET'),

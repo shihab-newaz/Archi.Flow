@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { Button } from '@/components/custom/Button'
 import { requireAuth } from '@/lib/auth-helpers-server'
-import { DashboardHero } from '@/modules/dashboard/DashboardHero'
+import Homepage from '@/features/home'
 
 export const metadata: Metadata = {
   title: 'Dashboard | Noor Academy LMS',
@@ -26,7 +26,7 @@ const DashboardPage = async () => {
         </p>
       </header>
 
-      <DashboardHero />
+      <Homepage />
 
       <div className="flex justify-center">
         <Button asChild>

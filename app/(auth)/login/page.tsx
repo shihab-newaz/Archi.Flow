@@ -5,7 +5,7 @@ import { Github, ShieldCheck, UserPlus } from 'lucide-react'
 import { AuthShell } from '@/components/custom/AuthShell'
 import { Button } from '@/components/custom/Button'
 import { ThemeToggle } from '@/components/custom/ThemeToggle'
-import { LoginForm } from '@/modules/auth/components/LoginForm'
+import { LoginForm } from '@/features/auth/components/LoginForm'
 
 export const metadata: Metadata = {
   title: 'Sign in | Noor Academy LMS',
