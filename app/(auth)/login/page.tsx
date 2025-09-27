@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Github, ShieldCheck, UserPlus } from 'lucide-react'
-
 import { AuthShell } from '@/components/custom/AuthShell'
 import { Button } from '@/components/custom/Button'
 import { ThemeToggle } from '@/components/custom/ThemeToggle'
@@ -37,9 +37,10 @@ const LoginPage = () => {
       }
       illustration={
         <div className="flex items-center justify-center">
-          <img
+          <Image
             src="/file.svg"
             alt="Placeholder illustration"
+            priority
             className="mx-auto w-64 max-w-full opacity-90"
           />
         </div>
