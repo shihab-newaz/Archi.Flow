@@ -25,6 +25,7 @@ import {
   type LoginPayload,
 } from '@/services'
 import type { ApiError } from '@/lib/apiClient'
+import { persistClientToken } from '@/lib/auth-helpers'
 
 const LoginForm = () => {
   const router = useRouter()
@@ -40,6 +41,12 @@ const LoginForm = () => {
 
   const loginMutation = useLoginMutation({
     onSuccess: (response: AuthResponse, variables: LoginPayload) => {
+      // Persist the token if provided
+      if (response?.token) {
+        const maxAge = variables.rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24 * 7 // 30 days if remember me, otherwise 7 days
+        persistClientToken(response.token, maxAge)
+      }
+
       toast.success(
         response?.user
           ? `Welcome back, ${response.user.name}!`
@@ -52,7 +59,7 @@ const LoginForm = () => {
         rememberMe: variables.rememberMe ?? false,
       })
 
-      router.push('/dashboard')
+      router.push('/')
     },
     onError: (error: ApiError) => {
       toast.error(error.message ?? 'Unable to sign in. Please try again.')

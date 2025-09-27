@@ -1,6 +1,8 @@
 import { AUTH_COOKIE_NAME, getClientToken } from '@/lib/auth-helpers'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'
+const API_BASE_URL = process.env.NODE_ENV === 'development' 
+  ? '' // Use relative URLs in development for MSW
+  : (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333')
 
 interface ApiRequestConfig<TBody = unknown> extends Omit<RequestInit, 'body'> {
   json?: TBody

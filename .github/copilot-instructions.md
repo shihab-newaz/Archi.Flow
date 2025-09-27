@@ -1,209 +1,47 @@
-# Copilot Instructions
+# Copilot / AI contributor instructions
 
-## Project Configuration
+This file gives focused, actionable guidance for AI coding agents working in this repo (a Next.js 15 + TypeScript app using Tailwind/shadcn, Zustand and TanStack Query).
 
-- **Framework**: Next.js 15+ with App Router
-- **Language**: TypeScript (strict mode)
-- **Styling**: Tailwind CSS with shadcn/ui
-- **State Management**: Zustand for client-side state
-- **Data Fetching**: TanStack Query (React Query)
-- **UI Components**: shadcn/ui primitives
-- **React Version**: 19 (with inherent compiler optimizations)
+Keep suggestions small, concrete, and follow existing project conventions. Reference these files when in doubt: `app/layout.tsx`, `lib/apiClient.ts`, `lib/auth-helpers.ts`, `modules/auth/**`, `services/**`, `components/ui/**`, `components/custom/**`, `store/zustand/**`, and `mocks/**`.
 
----
+Key rules (short):
+- App Router / Server vs Client: files under `app/` are Server Components by default. Add `"use client"` only at the top of components that need client-side hooks/state (example: `modules/auth/components/LoginForm.tsx`).
+- API: use `lib/apiClient.ts` (apiClient.get/post/put/etc) for HTTP. It wraps fetch, sets credentials: 'include', default cache `no-store`, and supports `requiresAuth` which reads cookies on the server and local storage on the client. Default API base: `process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'`.
+- Auth: auth helpers live in `lib/auth-helpers*.ts`. The codebase relies on a cookie name constant (`AUTH_COOKIE_NAME`) for server-side reads — preserve this pattern when adding auth flows.
+- Services & React Query: add endpoint wrappers in `services/modules/*.ts` and expose hooks from `services/index.ts` (mutations use optimistic invalidation where appropriate). Follow existing `useLoginMutation` usage in `LoginForm.tsx` for shape and onSuccess/onError handlers.
+- UI components: `components/ui/` contains shadcn primitives. Wrap or compose them in `components/custom/` when you need reusable variants (see `Button.tsx`, `Input.tsx`). Use `forwardRef` and TypeScript interfaces for props.
+- State: client state uses Zustand stores under `store/zustand/` (e.g. `useUiStore`), keep stores small and expose setters/selectors.
 
-## Recommended Folder Structure
+Developer workflows & scripts:
+- Start dev: `npm run dev` (uses `next dev --turbopack`).
+- Build: `npm run build` (`next build --turbopack`), Start production: `npm run start`.
+- Lint / Format: `npm run lint`, `npm run format`.
+- Mocking: MSW is used for local mocking. Worker file is `public/mockServiceWorker.js` and mocks are in `mocks/` (see `mocks/browser.ts` and `mocks/handlers.ts`). When adding API mocks, update `mocks/handlers.ts` and regenerate the worker if needed.
 
-```
-app/
-├── (auth)/          # Authentication routes (login, register, forgot-password)
-├── (protected)/     # Protected routes requiring authentication
-├── dashboard/       # Example module-specific pages
-├── settings/        # Example module-specific pages
-└── layout.tsx       # App-wide layouts, metadata, and routing logic
+Patterns and gotchas:
+- Server cookie access: `lib/apiClient.ts` uses `next/headers` when running server-side — avoid reading `document.cookie` in server components.
+- HTTP errors: `apiClient` throws `ApiError` with `{status,message,details}`; callers expect this shape (see `LoginForm` error handling). Keep that shape when creating new error flows.
+- 204 responses: `apiClient` returns `undefined` for 204 — handle that in callers.
+- Content negotiation: `apiClient` checks Content-Type; non-JSON returns text.
+- Credentials: fetch uses `credentials: 'include'` — backend sessions/cookies assumed.
 
-modules/
-├── academic/        # Academic module: grades, attendance, assignments
-├── admission/       # Admission module: applications, interviews
-├── finance/         # Finance module: fees, donations, budgeting
-├── hostel/          # Hostel module: rooms, attendance, meals
-├── library/         # Library module: book catalog, circulation
-└── communication/   # Messaging, announcements, notifications
+When adding code (recommended checklist):
+1. Add service helper in `services/modules/<area>.ts` using `apiClient`.
+2. If UI, prefer composing shadcn primitives in `components/custom/` and add props interfaces.
+3. Add React Query hooks or use existing `services` exports for data fetching/mutations.
+4. Add MSW handlers in `mocks/handlers.ts` for local development if the endpoint is not available.
+5. Run `npm run lint` and `npm run dev` locally (Turbopack) to validate.
 
-components/
-├── ui/              # shadcn/ui primitives (auto-generated)
-├── custom/          # Custom reusable components built from primitives
-└── layout/          # Shared layout components (headers, sidebars, footers)
+Examples to reference:
+- API wrapper: `lib/apiClient.ts` — use `apiClient.post<AuthResponse>('/auth/login', { json: payload })` or the provided `services` helpers.
+- Login flow: `modules/auth/components/LoginForm.tsx` shows form validation (zod + react-hook-form), mutation usage, toast handling, and redirect on success.
+- Zustand: `store/zustand/ui.ts` shows toggle pattern for UI state.
 
-styles/
-├── globals.css      # Tailwind base + global styles
-├── components/      # Component-specific overrides
-└── utilities.css    # Helper classes if needed
+Do not change:
+- Global layout and provider wiring in `app/layout.tsx` and `components/providers/ClientProviders.tsx` without verifying SSR/CSR implications.
+- `public/mockServiceWorker.js` location — MSW tooling expects it under `public/` (see package.json `msw.workerDirectory`).
 
-lib/
-├── apiClient/       # Defines the API client instance (baseURL, headers, interceptors)
-└── services/        # Uses apiClient to define endpoints for modules
-
-store/
-└── zustand/         # Zustand state management stores
-
-hooks/
-├── useAuth.ts       # Auth hook
-├── useZustandStores.ts
-└── usePermissions.ts
-
-public/
-├── images/
-├── icons/
-└── static/
-```
-
-**Key Notes on Folder Strategy:**
-
-- `modules/` contain **business logic** (state, hooks, API calls).
-- `app/` only contains **routing, layouts, and optional SSR data fetching**.
-- `components/ui/` only contains **direct shadcn primitives**.
-- `components/custom/` contains **enhanced components built from shadcn primitives** for reusability.
-- Protected routes `(protected)` ensure **authentication gating**, while `(auth)` is for public auth pages.
-- `lib/apiClient/` only defines the **API client instance** (Axios or fetch wrapper).
-- `lib/services/` defines **service functions for endpoints**, using `apiClient`.
-- `store/zustand/` holds all **Zustand stores** for client-side state.
+If anything is ambiguous, ask which environment (local dev with MSW vs production API) the change targets. After edits, run lint and confirm no compile or runtime TypeScript or Next.js errors.
 
 ---
-
-## Code Standards
-
-### TypeScript
-
-- Use strict TS configuration (`strict: true`)
-- Always define interfaces for objects, props, and store state
-- Prefer `interface` over `type` for object shapes
-- Explicitly type return values for all functions
-- Enable strict null checks
-
----
-
-### Component Architecture
-
-- **Default Behavior**: Use shadcn/ui primitives directly
-- **Custom Components**: Use only if reusability or composition is needed; place in `components/custom/`
-- **Styling**: Follow shadcn primitives for all styling; avoid arbitrary class overrides
-- **React 19 Considerations**: Leverage automatic compiler optimizations, avoid unnecessary memoization unless profiling shows a benefit
-
----
-
-### State Management (Zustand)
-
-- Keep **stores small and focused**
-- Use TypeScript interfaces for store states
-- Implement immutable state updates
-- Use selectors for component subscriptions
-
-```typescript
-interface UserStore {
-  user: User | null
-  isLoading: boolean
-  setUser: (user: User) => void
-  clearUser: () => void
-}
-```
-
----
-
-### API Operations (TanStack Query)
-
-- `lib/apiClient/` defines the API client (baseURL, headers, interceptors)
-- `lib/services/` defines service functions using the apiClient for endpoints
-- Components import service functions and use React Query hooks for fetching/mutations
-- Use consistent query keys and hierarchical structure
-- Implement optimistic updates where appropriate
-- Handle errors and retries properly
-- Use query invalidation for dependent data updates
-
-```typescript
-// lib/apiClient/apiClient.ts
-import axios from 'axios'
-
-export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: { 'Content-Type': 'application/json' },
-})
-
-// lib/services/userService.ts
-import { apiClient } from '../apiClient/apiClient'
-
-export const getUser = async (id: string) => {
-  const response = await apiClient.get(`/users/${id}`)
-  return response.data
-}
-```
-
----
-
-### Custom Components Guidelines
-
-- Extend **shadcn primitives**, don’t replace them
-- Prefer **composition over inheritance**
-- Include proper TypeScript props and accessibility attributes
-- Use `forwardRef` when needed for primitive integration
-
-```typescript
-interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary';
-  size?: 'sm' | 'md' | 'lg';
-  isLoading?: boolean;
-}
-
-const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
-  ({ variant = 'primary', size = 'md', isLoading, children, ...props }, ref) => {
-    return (
-      <Button
-        ref={ref}
-        className={cn(buttonVariants({ variant, size }))}
-        disabled={isLoading}
-        {...props}
-      >
-        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        {children}
-      </Button>
-    );
-  }
-);
-```
-
----
-
-### Next.js 15 Patterns
-
-- App Router conventions for `app/`
-- Use **Server Components** by default, Client Components only when needed
-- Implement `loading.tsx` and `error.tsx` per folder for UX consistency
-- Fetch data **server-side if possible**; otherwise client-side with React Query
-- Keep routing and SSR logic in `app/`, leave **business logic to `modules/`**
-
----
-
-### Error Handling
-
-- Implement error boundaries at module or page level
-- Use try-catch for async operations
-- Provide meaningful user messages and log for debugging
-
----
-
-### Performance & React 19
-
-- Compiler optimizations handle most re-renders automatically
-- Use proper `key` props in lists
-- Optimize images with `next/image`
-- Implement lazy loading via `dynamic` imports
-- Avoid unnecessary `React.memo`, `useMemo`, `useCallback` unless profiling shows a benefit
-
----
-
-### Style Guidelines
-
-- **Always start with shadcn primitives**
-- Custom components are **allowed only if composition is needed**
-- Maintain **consistency across modules**
-- Tailwind utility classes should complement primitives, not replace them
+Please review and tell me any parts you want expanded (examples, more file anchors, or CI notes) and I will iterate.

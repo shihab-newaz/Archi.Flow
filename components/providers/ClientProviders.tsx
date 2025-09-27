@@ -3,7 +3,6 @@
 import { PropsWithChildren, useEffect, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
-
 import { ThemeProvider } from '@/hooks/use-theme'
 
 export default function ClientProviders({ children }: PropsWithChildren) {
@@ -25,16 +24,16 @@ export default function ClientProviders({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
-      import('../../mocks/browser')
+      import('@/mocks/browser')
         .then(({ startWorker }) => {
-          startWorker().catch((err: unknown) => {
-            // eslint-disable-next-line no-console
-            console.error('Failed to start MSW worker', err)
-          })
+          console.log('Initializing MSW...')
+          return startWorker()
         })
-        .catch((err) => {
-          // eslint-disable-next-line no-console
-          console.error('Failed to load MSW mocks', err)
+        .then(() => {
+          console.log('MSW initialized successfully')
+        })
+        .catch((err: unknown) => {
+          console.error('Failed to initialize MSW:', err)
         })
     }
   }, [])
