@@ -12,7 +12,7 @@ export default function MainContent({ children, className }: MainContentProps) {
   return (
     <main
       className={cn(
-        'flex-1 overflow-y-auto bg-muted/30',
+        'flex-1 overflow-y-auto bg-muted/30 mt-6',
         className
       )}
     >

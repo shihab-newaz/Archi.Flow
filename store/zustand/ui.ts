@@ -16,6 +16,7 @@ const uiStore: StateCreator<UiState> = (set) => ({
         typeof nextState === 'boolean' ? nextState : !state.isSidebarOpen,
     })),
   setActiveModal: (modal: string | null) => set({ activeModal: modal }),
+  // theme is now handled by next-themes
 })
 
 export const useUiStore = create<UiState>(uiStore)

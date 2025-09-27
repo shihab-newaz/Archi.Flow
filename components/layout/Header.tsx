@@ -20,6 +20,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
+import { ThemeToggle } from '@/components/custom/ThemeToggle'
 
 interface HeaderProps {
   breadcrumbs?: Array<{
@@ -30,7 +31,7 @@ interface HeaderProps {
 
 export default function Header({ breadcrumbs = [{ title: 'Dashboard' }] }: HeaderProps) {
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 px-4">
+    <header className="flex h-16 shrink-0 items-center gap-2 px-4 mb-6 border-b bg-background shadow-md">
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 h-4" />
       
@@ -45,7 +46,7 @@ export default function Header({ breadcrumbs = [{ title: 'Dashboard' }] }: Heade
                     <Link href={crumb.href}>{crumb.title}</Link>
                   </BreadcrumbLink>
                 ) : (
-                  <BreadcrumbPage>{crumb.title}</BreadcrumbPage>
+                  <BreadcrumbPage className="text-lg font-semibold">{crumb.title}</BreadcrumbPage>
                 )}
               </BreadcrumbItem>
               {index < breadcrumbs.length - 1 && (
@@ -114,6 +115,9 @@ export default function Header({ breadcrumbs = [{ title: 'Dashboard' }] }: Heade
             </div>
           </PopoverContent>
         </Popover>
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
         {/* Profile */}
         <Popover>

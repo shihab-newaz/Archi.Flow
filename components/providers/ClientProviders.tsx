@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { PropsWithChildren, useState } from 'react'
+import React, { PropsWithChildren, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
-import { ThemeProvider } from '@/hooks/use-theme'
+import { ThemeProvider } from 'next-themes'
 
 export default function ClientProviders({ children }: PropsWithChildren) {
   const [queryClient] = useState(
@@ -41,7 +41,7 @@ export default function ClientProviders({ children }: PropsWithChildren) {
   }
 
   return (
-    <ThemeProvider>
+    <ThemeProvider attribute="class" enableSystem defaultTheme="system">
       <QueryClientProvider client={queryClient}>
         {children}
         <Toaster />

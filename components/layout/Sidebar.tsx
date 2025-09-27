@@ -76,7 +76,7 @@ export default function AppSidebar() {
   const pathname = usePathname()
 
   return (
-    <Sidebar variant="inset">
+    <Sidebar variant="inset" className="shadow-lg">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
