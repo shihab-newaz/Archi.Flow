@@ -2,6 +2,13 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import ClientProviders from '../components/providers/ClientProviders'
+import { initMSW } from '../lib/msw'
+
+// Initialize MSW before React starts (development only)
+if (typeof window !== 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  initMSW()
+}
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
