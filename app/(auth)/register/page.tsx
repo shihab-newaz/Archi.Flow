@@ -39,6 +39,8 @@ const RegisterPage = () => {
         <div className="flex items-center justify-center">
           <Image
             src="/file.svg"
+            width={256}
+            height={256}
             alt="Placeholder illustration"
             className="mx-auto w-64 max-w-full opacity-90"
           />

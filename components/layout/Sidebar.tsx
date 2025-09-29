@@ -76,7 +76,10 @@ export default function AppSidebar() {
   const pathname = usePathname()
 
   return (
-    <Sidebar variant="inset" className="shadow-lg">
+    <Sidebar
+      variant="sidebar"
+      className="shadow-md !bg-gray-800 !dark:bg-gray-800/30"
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { toast } from 'sonner'
-import { registerSchema, type RegisterFormValues } from '@/modules/auth/schemas'
+import { registerSchema, type RegisterFormValues } from '@/features/auth/schemas'
 import { useRegisterMutation, type AuthResponse } from '@/services'
 import type { ApiError } from '@/lib/apiClient'
 

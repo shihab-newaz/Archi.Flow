@@ -41,6 +41,8 @@ const LoginPage = () => {
             src="/file.svg"
             alt="Placeholder illustration"
             priority
+            width={256}
+            height={256}
             className="mx-auto w-64 max-w-full opacity-90"
           />
         </div>
