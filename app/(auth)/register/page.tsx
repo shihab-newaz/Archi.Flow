@@ -8,16 +8,16 @@ import { ThemeToggle } from '@/components/custom/ThemeToggle'
 import { RegisterForm } from '@/features/auth/components/RegisterForm'
 
 export const metadata: Metadata = {
-  title: 'Create account | Noor Academy LMS',
+  title: 'Create account | Archi.Flow',
   description:
-    'Set up your Noor Academy account and start managing your institution.',
+    'Set up your Archi.Flow account and start managing your projects.',
 }
 
 const RegisterPage = () => {
   return (
     <AuthShell
       title="Create your account"
-      description="Set up your school or madrasa in minutes and invite your team."
+      description="Set up your workspace in minutes and invite your team."
       footer={
         <div className="flex flex-col items-center gap-2">
           <p>

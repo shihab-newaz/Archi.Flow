@@ -86,11 +86,11 @@ export default function AppSidebar() {
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <span className="text-white font-bold text-sm">N</span>
+                  <span className="text-white font-bold text-sm">A</span>
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Noor Academy</span>
-                  <span className="truncate text-xs">Islamic Education Platform</span>
+                  <span className="truncate font-semibold">Archi.Flow</span>
+                  <span className="truncate text-xs">Project Management</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -137,7 +137,7 @@ export default function AppSidebar() {
                   <User2 className="h-4 w-4" />
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">John Doe</span>
-                    <span className="truncate text-xs">john@nooracademy.com</span>
+                    <span className="truncate text-xs">john@archi.flow</span>
                   </div>
                   <ChevronUp className="ml-auto size-4" />
                 </SidebarMenuButton>

@@ -8,16 +8,16 @@ import { ThemeToggle } from '@/components/custom/ThemeToggle'
 import { LoginForm } from '@/features/auth/components/LoginForm'
 
 export const metadata: Metadata = {
-  title: 'Sign in | Noor Academy LMS',
+  title: 'Sign in | Archi.Flow',
   description:
-    'Access your Noor Academy dashboard and manage your learning journey.',
+    'Access your architectural project management dashboard.',
 }
 
 const LoginPage = () => {
   return (
     <AuthShell
       title="Welcome back"
-      description="Sign in to access your personalized learning experience."
+      description="Sign in to manage your projects and clients."
       footer={
         <div className="flex flex-col items-center gap-2">
           <p>

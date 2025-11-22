@@ -6,7 +6,6 @@ import { initMSW } from '../lib/msw'
 
 // Initialize MSW before React starts (development only)
 if (typeof window !== 'undefined') {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   initMSW()
 }
 
@@ -21,9 +20,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Noor Academy - Islamic Education Platform',
+  title: 'ARCHI.FLOW - Architect Project Management',
   description:
-    'Your journey in Islamic knowledge - Quran Studies, Hadith, Fiqh, and more',
+    'Premium project management tool for architects.',
 }
 
 export default function RootLayout({
@@ -32,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
