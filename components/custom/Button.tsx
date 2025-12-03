@@ -18,7 +18,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     // When asChild is true, don't render icons as they should be part of the child element
-    const shouldShowIcons = !asChild && !isLoading
+    // const shouldShowIcons = !asChild && !isLoading
 
     return (
       <PrimitiveButton

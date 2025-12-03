@@ -38,7 +38,7 @@ export function NewClientSheet() {
       toast.success('Client added successfully');
       router.refresh();
     } catch (error) {
-      toast.error('Failed to add client');
+      toast.error('Failed to add client'+ (error instanceof Error ? `: ${error.message}` : '.'));
     }
   }
 

@@ -17,34 +17,34 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.1 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30, delay: index * 0.1 }}
     >
       <Link href={`/projects/${project.id}`}>
-        <Card className="hover:shadow-md transition-shadow cursor-pointer h-full flex flex-col group">
+        <Card className="hover:border-primary transition-colors cursor-pointer h-full flex flex-col group bg-card/50 backdrop-blur-sm">
           <CardHeader className="pb-2">
-            <div className="flex justify-between items-start">
-              <CardTitle className="text-lg font-medium truncate group-hover:text-primary transition-colors">
+            <div className="flex justify-between items-start gap-4">
+              <CardTitle className="text-xl font-bold font-display truncate group-hover:text-primary transition-colors">
                 {project.name}
               </CardTitle>
-              <Badge variant={project.status === 'Active' ? 'default' : 'secondary'}>
+              <Badge variant={project.status === 'Active' ? 'default' : 'secondary'} className="font-mono uppercase text-xs tracking-wider rounded-none">
                 {project.status}
               </Badge>
             </div>
           </CardHeader>
-          <CardContent className="flex-1">
-            <div className="text-sm text-muted-foreground mb-4">{project.address}</div>
+          <CardContent className="flex-1 space-y-4">
+            <div className="text-sm text-muted-foreground font-mono truncate">{project.address}</div>
             <div className="flex items-center gap-2 text-sm">
-              <Badge variant="outline" className="rounded-sm">
+              <Badge variant="outline" className="rounded-none font-mono text-xs uppercase tracking-wider">
                 {project.phase}
               </Badge>
             </div>
           </CardContent>
-          <CardFooter className="border-t pt-4 text-sm text-muted-foreground flex justify-between">
-            <div className="flex items-center gap-1">
+          <CardFooter className="border-t border-border/50 pt-4 text-sm text-muted-foreground flex justify-between font-mono">
+            <div className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4" />
               {new Date(project.startDate).toLocaleDateString()}
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <DollarSign className="h-4 w-4" />
               {project.budget.toLocaleString()}
             </div>

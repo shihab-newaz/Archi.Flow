@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -9,38 +9,42 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Plus } from 'lucide-react';
-import { useState } from 'react';
-import { createTask } from '@/app/actions/task';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { TaskStatus } from '@/types';
+} from '@/components/ui/select'
+import { Plus } from 'lucide-react'
+import { useState } from 'react'
+import { createTask } from '@/app/actions/task'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { TaskStatus } from '@/types'
 
 interface NewTaskDialogProps {
-  projectId: string;
-  defaultStatus?: TaskStatus;
-  trigger?: React.ReactNode;
+  projectId: string
+  defaultStatus?: TaskStatus
+  trigger?: React.ReactNode
 }
 
-export function NewTaskDialog({ projectId, defaultStatus = 'To Do', trigger }: NewTaskDialogProps) {
-  const [open, setOpen] = useState(false);
-  const router = useRouter();
+export function NewTaskDialog({
+  projectId,
+  defaultStatus = 'To Do',
+  trigger,
+}: NewTaskDialogProps) {
+  const [open, setOpen] = useState(false)
+  const router = useRouter()
 
   async function onSubmit(formData: FormData) {
-    const title = formData.get('title') as string;
-    const dueDate = formData.get('dueDate') as string;
-    const assignee = formData.get('assignee') as string;
-    const status = formData.get('status') as TaskStatus;
+    const title = formData.get('title') as string
+    const dueDate = formData.get('dueDate') as string
+    const assignee = formData.get('assignee') as string
+    const status = formData.get('status') as TaskStatus
 
     try {
       await createTask({
@@ -49,12 +53,15 @@ export function NewTaskDialog({ projectId, defaultStatus = 'To Do', trigger }: N
         dueDate,
         assignee,
         status,
-      });
-      setOpen(false);
-      toast.success('Task created successfully');
-      router.refresh();
+      })
+      setOpen(false)
+      toast.success('Task created successfully')
+      router.refresh()
     } catch (error) {
-      toast.error('Failed to create task');
+      toast.error(
+        'Failed to create task' +
+          (error instanceof Error ? `: ${error.message}` : '.')
+      )
     }
   }
 
@@ -62,7 +69,10 @@ export function NewTaskDialog({ projectId, defaultStatus = 'To Do', trigger }: N
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="ghost" className="w-full justify-start text-muted-foreground text-sm">
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-muted-foreground text-sm"
+          >
             <Plus className="mr-2 h-4 w-4" /> Add Task
           </Button>
         )}
@@ -77,9 +87,14 @@ export function NewTaskDialog({ projectId, defaultStatus = 'To Do', trigger }: N
         <form action={onSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
             <Label htmlFor="title">Task Title</Label>
-            <Input id="title" name="title" placeholder="e.g. Review structural drawings" required />
+            <Input
+              id="title"
+              name="title"
+              placeholder="e.g. Review structural drawings"
+              required
+            />
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="dueDate">Due Date</Label>
@@ -111,5 +126,5 @@ export function NewTaskDialog({ projectId, defaultStatus = 'To Do', trigger }: N
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

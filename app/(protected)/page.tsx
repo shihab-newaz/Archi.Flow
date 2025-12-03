@@ -1,27 +1,41 @@
 import { getProjects } from '@/app/actions/project';
 import { ProjectCard } from '@/components/dashboard/ProjectCard';
 import { StatsOverview } from '@/components/dashboard/StatsOverview';
+import { PageTransition, StaggerItem } from '@/components/ui/PageTransition';
 
 export default async function DashboardPage() {
   const projects = await getProjects();
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-        <p className="text-muted-foreground">Overview of your architectural projects.</p>
-      </div>
+    <PageTransition className="space-y-12 p-8">
+      <StaggerItem>
+        <div className="flex flex-col gap-2 border-b border-border pb-6">
+          <h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-primary font-display">
+            Dashboard
+          </h2>
+          <p className="text-lg text-muted-foreground font-mono uppercase tracking-widest pl-1">
+            Architectural Projects Overview
+          </p>
+        </div>
+      </StaggerItem>
       
-      <StatsOverview projects={projects} />
+      <StaggerItem>
+        <StatsOverview projects={projects} />
+      </StaggerItem>
 
-      <div>
-        <h3 className="text-xl font-semibold mb-4">Recent Projects</h3>
+      <StaggerItem className="space-y-8">
+        <div className="flex items-end justify-between">
+          <h3 className="text-3xl font-semibold font-display">Recent Projects</h3>
+          <span className="text-sm font-mono text-muted-foreground border border-border px-3 py-1 bg-background">
+            {projects.length} ACTIVE
+          </span>
+        </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
-      </div>
-    </div>
+      </StaggerItem>
+    </PageTransition>
   );
 }

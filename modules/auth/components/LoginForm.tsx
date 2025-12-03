@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { toast } from 'sonner'
-import { loginSchema, type LoginFormValues } from '@/features/auth/schemas'
+import { loginSchema, type LoginFormValues } from '@/modules/auth/schemas'
 import {
   useLoginMutation,
   type AuthResponse,

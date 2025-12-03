@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Syne, Space_Mono } from 'next/font/google'
 import './globals.css'
 import ClientProviders from '../components/providers/ClientProviders'
 import { initMSW } from '../lib/msw'
@@ -9,13 +9,14 @@ if (typeof window !== 'undefined') {
   initMSW()
 }
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const syne = Syne({
+  variable: '--font-display',
   subsets: ['latin'],
 })
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const spaceMono = Space_Mono({
+  variable: '--font-mono',
+  weight: ['400', '700'],
   subsets: ['latin'],
 })
 
@@ -33,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${syne.variable} ${spaceMono.variable} antialiased font-mono`}
       >
         <ClientProviders>{children}</ClientProviders>
       </body>
