@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Github, ShieldCheck, UserPlus } from 'lucide-react'
 import { AuthShell } from '@/components/custom/AuthShell'
-import { Button } from '@/components/custom/Button'
+import Button from '@/components/custom/Button'
 import { ThemeToggle } from '@/components/custom/ThemeToggle'
 import { LoginForm } from '@/modules/auth/components/LoginForm'
 
@@ -55,17 +55,17 @@ const LoginPage = () => {
       <div className="grid gap-4">
         <div className="grid gap-3">
           <Button
-            variant="outline"
-            leftIcon={<Github className="h-4 w-4" aria-hidden />}
-          >
-            Sign in with GitHub
-          </Button>
+            label="GitHub"
+            icon={<Github className="h-4 w-4" />}
+            color="pink"
+            className="w-full"
+          />
           <Button
-            variant="outline"
-            leftIcon={<UserPlus className="h-4 w-4" aria-hidden />}
-          >
-            Continue with SSO
-          </Button>
+            label="SSO"
+            icon={<UserPlus className="h-4 w-4" />}
+            color="cyan"
+            className="w-full"
+          />
         </div>
 
         <div className="text-center text-xs uppercase tracking-wide text-muted-foreground">

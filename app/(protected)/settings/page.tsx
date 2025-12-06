@@ -1,6 +1,6 @@
 import { getUser, updateUsername } from '@/app/actions/user';
 import { ThemeToggle } from '@/components/custom/ThemeToggle';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/custom/Button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -53,7 +53,7 @@ export default async function SettingsPage() {
                   placeholder="Enter your username"
                 />
               </div>
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit" label="Save Changes" color="cyan" />
             </form>
           </CardContent>
         </Card>

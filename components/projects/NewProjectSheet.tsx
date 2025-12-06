@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import Button from '@/components/custom/Button'
 import {
   Sheet,
   SheetContent,
@@ -65,9 +65,11 @@ export function NewProjectSheet() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" /> New Project
-        </Button>
+        <Button
+          label="New Project"
+          icon={<Plus className="h-4 w-4" />}
+          color="cyan"
+        />
       </SheetTrigger>
       <SheetContent className="sm:max-w-[540px]">
         <SheetHeader>
@@ -130,7 +132,7 @@ export function NewProjectSheet() {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button type="submit">Create Project</Button>
+            <Button type="submit" label="Create Project" color="pink" />
           </div>
         </form>
       </SheetContent>

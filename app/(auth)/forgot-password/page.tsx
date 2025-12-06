@@ -1,9 +1,13 @@
-import Link from 'next/link'
+'use client'
+
+import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 
-import { Button } from '@/components/custom/Button'
+import Button from '@/components/custom/Button'
 
 const ForgotPasswordPage = () => {
+  const router = useRouter()
+
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center gap-6 px-4 text-center">
       <div className="space-y-3">
@@ -16,14 +20,11 @@ const ForgotPasswordPage = () => {
         </p>
       </div>
       <Button
-        asChild
-        variant="ghost"
-      >
-        <Link href="/login">
-          <ArrowLeft className="h-4 w-4 mr-2" aria-hidden />
-          Back to sign in
-        </Link>
-      </Button>
+        label="Back to sign in"
+        icon={<ArrowLeft className="h-4 w-4" />}
+        onClick={() => router.push('/login')}
+        color="pink"
+      />
     </div>
   )
 }

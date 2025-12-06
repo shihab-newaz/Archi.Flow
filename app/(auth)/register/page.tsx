@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { BadgeCheck, BellRing } from 'lucide-react'
 import { AuthShell } from '@/components/custom/AuthShell'
-import { Button } from '@/components/custom/Button'
+import Button from '@/components/custom/Button'
 import { ThemeToggle } from '@/components/custom/ThemeToggle'
 import { RegisterForm } from '@/modules/auth/components/RegisterForm'
 
@@ -54,11 +54,11 @@ const RegisterPage = () => {
       <div className="grid gap-4">
         <div className="grid gap-3">
           <Button
-            variant="outline"
-            leftIcon={<BellRing className="h-4 w-4" aria-hidden />}
-          >
-            Invite teammates
-          </Button>
+            label="Invite teammates"
+            icon={<BellRing className="h-4 w-4" />}
+            color="cyan"
+            className="w-full"
+          />
         </div>
 
         <RegisterForm />

@@ -9,7 +9,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
+import Button from '@/components/custom/Button'
 import {
   Card,
   CardHeader,
@@ -126,10 +126,12 @@ export default function Homepage() {
               Continue your Islamic learning journey
             </p>
           </div>
-          <Button variant="outline">
-            <Award className="w-4 h-4 mr-2" />
-            View Certificates
-          </Button>
+          <Button 
+            label="Certificates" 
+            icon={<Award className="w-4 h-4" />} 
+            color="pink" 
+            className="scale-90"
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -166,7 +168,7 @@ export default function Homepage() {
           <h3 className="text-xl font-semibold text-foreground">
             My Courses
           </h3>
-          <Button variant="outline">View All Courses</Button>
+          <Button label="All Courses" color="cyan" className="scale-90" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -212,9 +214,7 @@ export default function Homepage() {
                   </div>
                 </div>
 
-                <Button variant="outline" className="w-full mt-4">
-                  Continue Learning
-                </Button>
+                <Button label="Continue" color="cyan" className="w-full mt-4 scale-90 origin-left" />
               </CardContent>
             </Card>
           ))}

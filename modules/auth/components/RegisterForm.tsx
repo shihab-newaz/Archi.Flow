@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Lock, Mail, User } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
-import { Button } from '@/components/custom/Button'
+import Button from '@/components/custom/Button'
 import { Input } from '@/components/custom/Input'
 import {
   Form,
@@ -146,10 +146,8 @@ const RegisterForm = () => {
         <Button
           type="submit"
           className="w-full"
-          isLoading={registerMutation.isPending}
-        >
-          Create account
-        </Button>
+          label={registerMutation.isPending ? "Creating account..." : "Create account"}
+        />
 
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{' '}

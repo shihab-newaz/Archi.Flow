@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import Button from '@/components/custom/Button'
 import {
   Dialog,
   DialogContent,
@@ -70,11 +70,11 @@ export function NewTaskDialog({
       <DialogTrigger asChild>
         {trigger || (
           <Button
-            variant="ghost"
-            className="w-full justify-start text-muted-foreground text-sm"
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add Task
-          </Button>
+            label="Add Task"
+            icon={<Plus className="h-4 w-4" />}
+            className="w-full scale-75 origin-left"
+            color="pink"
+          />
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -121,7 +121,7 @@ export function NewTaskDialog({
           </div>
 
           <DialogFooter>
-            <Button type="submit">Create Task</Button>
+            <Button type="submit" label="Create Task" color="cyan" />
           </DialogFooter>
         </form>
       </DialogContent>

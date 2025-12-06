@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { Bell, Search, User, Settings, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import CyberButton from '@/components/custom/Button'
 import { Input } from '@/components/ui/input'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
@@ -111,7 +112,7 @@ export default function Header({ breadcrumbs = [{ title: 'Dashboard' }] }: Heade
                   </div>
                 </div>
               </div>
-              <Button variant="outline" className="w-full">View all notifications</Button>
+              <CyberButton label="View all" color="cyan" className="w-full scale-90 origin-center" />
             </div>
           </PopoverContent>
         </Popover>
