@@ -1,6 +1,6 @@
 'use client'
 
-import Button from '@/components/custom/Button'
+import { Button } from '@/components/custom/Button'
 import {
   Sheet,
   SheetContent,
@@ -57,7 +57,7 @@ export function NewProjectSheet() {
     } catch (error) {
       toast.error(
         'Failed to create project' +
-          (error instanceof Error ? `: ${error.message}` : '.')
+        (error instanceof Error ? `: ${error.message}` : '.')
       )
     }
   }
@@ -65,11 +65,10 @@ export function NewProjectSheet() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button
-          label="New Project"
-          icon={<Plus className="h-4 w-4" />}
-          color="cyan"
-        />
+        <Button color="cyan">
+          <Button.Icon><Plus className="h-4 w-4" /></Button.Icon>
+          <Button.Label>New Project</Button.Label>
+        </Button>
       </SheetTrigger>
       <SheetContent className="sm:max-w-[540px]">
         <SheetHeader>
@@ -132,7 +131,9 @@ export function NewProjectSheet() {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button type="submit" label="Create Project" color="pink" />
+            <Button type="submit" color="pink">
+              <Button.Label>Create Project</Button.Label>
+            </Button>
           </div>
         </form>
       </SheetContent>

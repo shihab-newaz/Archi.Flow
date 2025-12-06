@@ -1,6 +1,6 @@
 'use client'
 
-import Button from '@/components/custom/Button'
+import { Button } from '@/components/custom/Button'
 import {
   Dialog,
   DialogContent,
@@ -60,7 +60,7 @@ export function NewTaskDialog({
     } catch (error) {
       toast.error(
         'Failed to create task' +
-          (error instanceof Error ? `: ${error.message}` : '.')
+        (error instanceof Error ? `: ${error.message}` : '.')
       )
     }
   }
@@ -69,12 +69,10 @@ export function NewTaskDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button
-            label="Add Task"
-            icon={<Plus className="h-4 w-4" />}
-            className="w-full scale-75 origin-left"
-            color="pink"
-          />
+          <Button className="w-full scale-75 origin-left" color="pink">
+            <Button.Icon><Plus className="h-4 w-4" /></Button.Icon>
+            <Button.Label>Add Task</Button.Label>
+          </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -121,7 +119,9 @@ export function NewTaskDialog({
           </div>
 
           <DialogFooter>
-            <Button type="submit" label="Create Task" color="cyan" />
+            <Button type="submit" color="cyan">
+              <Button.Label>Create Task</Button.Label>
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

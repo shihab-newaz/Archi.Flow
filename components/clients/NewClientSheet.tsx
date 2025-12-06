@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@/components/custom/Button';
+import { Button } from '@/components/custom/Button';
 import {
   Sheet,
   SheetContent,
@@ -38,18 +38,17 @@ export function NewClientSheet() {
       toast.success('Client added successfully');
       router.refresh();
     } catch (error) {
-      toast.error('Failed to add client'+ (error instanceof Error ? `: ${error.message}` : '.'));
+      toast.error('Failed to add client' + (error instanceof Error ? `: ${error.message}` : '.'));
     }
   }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button
-          label="Add Client"
-          icon={<Plus className="h-4 w-4" />}
-          color="cyan"
-        />
+        <Button color="cyan">
+          <Button.Icon><Plus className="h-4 w-4" /></Button.Icon>
+          <Button.Label>Add Client</Button.Label>
+        </Button>
       </SheetTrigger>
       <SheetContent className="sm:max-w-[540px]">
         <SheetHeader>
@@ -63,7 +62,7 @@ export function NewClientSheet() {
             <Label htmlFor="name">Full Name</Label>
             <Input id="name" name="name" placeholder="e.g. Alice Johnson" required />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="email">Email Address</Label>
             <Input id="email" name="email" type="email" placeholder="alice@example.com" required />
@@ -80,7 +79,9 @@ export function NewClientSheet() {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button type="submit" label="Add Client" color="pink" />
+            <Button type="submit" color="pink">
+              <Button.Label>Add Client</Button.Label>
+            </Button>
           </div>
         </form>
       </SheetContent>

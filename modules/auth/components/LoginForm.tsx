@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Lock, Mail } from 'lucide-react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 
-import Button from '@/components/custom/Button'
+import { Button } from '@/components/custom/Button'
 import { Input } from '@/components/custom/Input'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -154,8 +154,11 @@ const LoginForm = () => {
         <Button
           type="submit"
           className="w-full"
-          label={loginMutation.isPending ? "Signing in..." : "Sign in"}
-        />
+          isLoading={loginMutation.isPending}
+        >
+          <Button.Spinner />
+          <Button.Label>{loginMutation.isPending ? 'Signing in...' : 'Sign in'}</Button.Label>
+        </Button>
 
         <p className="text-center text-sm text-muted-foreground">
           New to the platform?{' '}
