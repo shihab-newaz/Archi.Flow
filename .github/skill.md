@@ -492,7 +492,7 @@ import { zodResolver } from "@hookform/resolvers/zod"     // Zod + React Hook Fo
 
 ## 📋 Example: Creating a New Feature
 
-**Task:** Add a "Tasks" feature
+**Task:** Add a "Tasks" feature with TanStack Query
 
 ```bash
 # 1. Create structure
@@ -500,6 +500,9 @@ src/features/tasks/
   ├── components/
   │   ├── task-list.tsx
   │   └── task-card.tsx
+  ├── hooks/
+  │   ├── use-tasks.ts
+  │   └── use-update-task.ts
   ├── server/
   │   ├── data.ts       # getTasks(), getTaskById()
   │   └── actions.ts    # createTask(), updateTaskStatus()
@@ -507,16 +510,16 @@ src/features/tasks/
 
 # 2. Create page
 app/(dashboard)/tasks/
-  └── page.tsx          # Server Component, fetches + renders
+  └── page.tsx
 ```
 
 **data.ts:**
 ```typescript
 import { prisma } from "@/lib/prisma";
 
-export async function getTasks(projectId: string) {
+export async function getTasks(projectId?: string) {
   return await prisma.task.findMany({
-    where: { projectId },
+    where: projectId ? { projectId } : undefined,
     orderBy: { dueDate: 'asc' }
   });
 }
@@ -529,35 +532,92 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
 export async function updateTaskStatus(taskId: string, status: string) {
-  await prisma.task.update({ where: { id: taskId }, data: { status } });
+  const task = await prisma.task.update({ 
+    where: { id: taskId }, 
+    data: { status } 
+  });
   revalidatePath('/tasks');
+  return task;
+}
+```
+
+**hooks/use-tasks.ts:**
+```typescript
+import { useQuery } from "@tanstack/react-query";
+import { getTasks } from "../server/data";
+
+export function useTasks(projectId?: string) {
+  return useQuery({
+    queryKey: ['tasks', projectId],
+    queryFn: () => getTasks(projectId),
+  });
+}
+```
+
+**hooks/use-update-task.ts:**
+```typescript
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateTaskStatus } from "../server/actions";
+import { toast } from "sonner";
+
+export function useUpdateTask() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) => 
+      updateTaskStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      toast.success("Task updated");
+    },
+  });
 }
 ```
 
 **page.tsx:**
 ```typescript
-import { getTasks } from "@/features/tasks/server/data";
 import { TaskList } from "@/features/tasks/components/task-list";
 
-export default async function TasksPage() {
-  const tasks = await getTasks();
+export default function TasksPage() {
   return (
     <main className="p-8">
       <h1 className="font-display text-3xl mb-6">Tasks</h1>
-      <TaskList tasks={tasks} />
+      <TaskList />
     </main>
   );
 }
 ```
 
-**task-card.tsx:**
+**components/task-list.tsx:**
+```tsx
+"use client"
+import { useTasks } from "../hooks/use-tasks";
+import { TaskCard } from "./task-card";
+
+export function TaskList() {
+  const { data: tasks, isLoading } = useTasks();
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <div className="grid gap-4">
+      {tasks?.map(task => (
+        <TaskCard key={task.id} task={task} />
+      ))}
+    </div>
+  );
+}
+```
+
+**components/task-card.tsx:**
 ```tsx
 "use client"
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { updateTaskStatus } from "../server/actions";
+import { useUpdateTask } from "../hooks/use-update-task";
 
 export function TaskCard({ task }) {
+  const { mutate, isPending } = useUpdateTask();
+
   return (
     <Card className="border-zinc-200 p-6 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
       <h3 className="font-sans font-semibold">{task.title}</h3>
@@ -565,10 +625,11 @@ export function TaskCard({ task }) {
         {task.dueDate.toISOString()}
       </p>
       <button 
-        onClick={() => updateTaskStatus(task.id, 'DONE')}
-        className="mt-4 rounded-[2px] border border-zinc-900 px-4 py-2 text-xs uppercase"
+        onClick={() => mutate({ id: task.id, status: 'DONE' })}
+        disabled={isPending}
+        className="mt-4 rounded-[2px] border border-zinc-900 px-4 py-2 text-xs uppercase disabled:opacity-50"
       >
-        Mark Complete
+        {isPending ? "Updating..." : "Mark Complete"}
       </button>
     </Card>
   );
@@ -585,10 +646,10 @@ export function TaskCard({ task }) {
 - [ ] Colors use Zinc palette + accent colors
 - [ ] Buttons have sharp corners + hard shadows on hover
 - [ ] No `bg-white` on main canvas
-- [ ] Server Components for data fetching
+- [ ] TanStack Query hooks for data fetching
 - [ ] Server Actions for mutations (with `revalidatePath`)
 - [ ] Uses `cn()` for className merging
-- [ ] Proper Suspense boundaries for async components
+- [ ] Proper loading/error states in components
 - [ ] Mobile responsive (test `border-r`, `border-b` layouts)
 
 ---
@@ -597,10 +658,12 @@ export function TaskCard({ task }) {
 
 | Context | Pattern |
 |---------|---------|
-| Page route | `app/(dashboard)/{feature}/page.tsx` → Server Component |
-| Fetch data | `features/{feature}/server/data.ts` → async function |
-| Mutate data | `features/{feature}/server/actions.ts` → `'use server'` |
-| UI Component | `features/{feature}/components/{name}.tsx` |
+| Page route | `app/(dashboard)/{feature}/page.tsx` → Regular component |
+| Fetch data | `features/{feature}/hooks/use-{feature}.ts` → TanStack Query hook |
+| Server data fn | `features/{feature}/server/data.ts` → async function |
+| Mutate data | `features/{feature}/hooks/use-create-{feature}.ts` → useMutation |
+| Server action | `features/{feature}/server/actions.ts` → `'use server'` |
+| UI Component | `features/{feature}/components/{name}.tsx` → `"use client"` |
 | Shared component | `components/custom/{name}.tsx` |
 | Styling | Tailwind classes via `className` + `cn()` |
 | Fonts | Display/Sans/Mono via `font-display`, `font-sans`, `font-mono` |
