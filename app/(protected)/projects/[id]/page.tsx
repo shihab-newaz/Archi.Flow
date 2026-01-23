@@ -1,23 +1,24 @@
-import { getProjectById } from '@/app/actions/project';
-import { getTasks } from '@/app/actions/task';
+'use client'
+
+import { useParams } from 'next/navigation';
+import { useProjectQuery, useTasksQuery } from '@/services';
 import { PhaseTracker } from '@/components/projects/PhaseTracker';
 import { ProjectHeader } from '@/components/projects/ProjectHeader';
 import { TaskBoard } from '@/components/projects/TaskBoard';
-import { notFound } from 'next/navigation';
 
-interface ProjectDetailsPageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
+export default function ProjectDetailsPage() {
+  const params = useParams<{ id: string }>();
+  const projectId = Array.isArray(params?.id) ? params?.id?.[0] : params?.id;
+  const { data: project, isLoading: projectLoading, isError: projectError } =
+    useProjectQuery(projectId ?? '', Boolean(projectId));
+  const { data: tasks = [], isLoading: tasksLoading } = useTasksQuery(projectId, Boolean(projectId));
 
-export default async function ProjectDetailsPage({ params }: ProjectDetailsPageProps) {
-  const { id } = await params;
-  const project = await getProjectById(id);
-  const tasks = await getTasks(id);
+  if (projectLoading) {
+    return <div className="text-sm text-muted-foreground">Loading project...</div>;
+  }
 
-  if (!project) {
-    notFound();
+  if (projectError || !project) {
+    return <div className="text-sm text-destructive">Project not found.</div>;
   }
 
   return (
@@ -32,7 +33,11 @@ export default async function ProjectDetailsPage({ params }: ProjectDetailsPageP
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Tasks</h2>
         </div>
-        <TaskBoard tasks={tasks} projectId={project.id} />
+        {tasksLoading ? (
+          <div className="text-sm text-muted-foreground">Loading tasks...</div>
+        ) : (
+          <TaskBoard tasks={tasks} projectId={project.id} />
+        )}
       </div>
     </div>
   );

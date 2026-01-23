@@ -19,47 +19,51 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Plus } from 'lucide-react'
-import { useState } from 'react'
-import { createProject } from '@/app/actions/project'
-import { useRouter } from 'next/navigation'
+import { useState, type FormEvent } from 'react'
+import { useCreateProjectMutation } from '@/services'
 import { toast } from 'sonner'
+import type { ProjectPhase, ProjectStatus } from '@/types'
 
 // Define a type for project phases to replace 'any'
-type ProjectPhase = 'Concept' | 'Design' | 'Permitting' | 'Construction'
-
 export function NewProjectSheet() {
   const [open, setOpen] = useState(false)
-  const router = useRouter()
+  const createProjectMutation = useCreateProjectMutation({
+    onSuccess: () => {
+      setOpen(false)
+      toast.success('Project created successfully')
+    },
+    onError: (error) => {
+      toast.error(
+        'Failed to create project' +
+          (error instanceof Error ? `: ${error.message}` : '.')
+      )
+    },
+  })
 
-  async function onSubmit(formData: FormData) {
+  function onSubmit(formData: FormData) {
     const name = formData.get('name') as string
     const address = formData.get('address') as string
     const budget = Number(formData.get('budget'))
     const startDate = formData.get('startDate') as string
-    // Fix: Replace 'any' with proper type assertion and validation
     const phaseValue = formData.get('phase') as string
-    const phase: ProjectPhase = phaseValue as ProjectPhase // Type assertion after validation if needed
-    const status = 'Active' // Default status
+    const phase = phaseValue as ProjectPhase
+    const status: ProjectStatus = 'Active'
 
-    try {
-      await createProject({
-        name,
-        address,
-        budget,
-        startDate,
-        phase,
-        status,
-        clientId: '1',
-      })
-      setOpen(false)
-      toast.success('Project created successfully')
-      router.refresh()
-    } catch (error) {
-      toast.error(
-        'Failed to create project' +
-        (error instanceof Error ? `: ${error.message}` : '.')
-      )
-    }
+    createProjectMutation.mutate({
+      name,
+      address,
+      budget,
+      startDate,
+      phase,
+      status,
+      clientId: '1',
+    })
+  }
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    onSubmit(formData)
   }
 
   return (
@@ -77,7 +81,7 @@ export function NewProjectSheet() {
             Add a new architectural project to your portfolio.
           </SheetDescription>
         </SheetHeader>
-        <form action={onSubmit} className="space-y-6 mt-8">
+        <form onSubmit={handleSubmit} className="space-y-6 mt-8">
           <div className="space-y-2">
             <Label htmlFor="name">Project Name</Label>
             <Input
@@ -131,7 +135,8 @@ export function NewProjectSheet() {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button type="submit" color="pink">
+            <Button type="submit" color="pink" isLoading={createProjectMutation.isPending}>
+              <Button.Spinner />
               <Button.Label>Create Project</Button.Label>
             </Button>
           </div>

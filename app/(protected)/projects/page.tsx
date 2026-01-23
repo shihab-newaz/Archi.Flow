@@ -1,9 +1,19 @@
-import { getProjects } from '@/app/actions/project';
+'use client'
+
+import { useProjectsQuery } from '@/services';
 import { ProjectCard } from '@/components/dashboard/ProjectCard';
 import { NewProjectSheet } from '@/components/projects/NewProjectSheet';
 
-export default async function ProjectsPage() {
-  const projects = await getProjects();
+export default function ProjectsPage() {
+  const { data: projects = [], isLoading, isError } = useProjectsQuery();
+
+  if (isLoading) {
+    return <div className="text-sm text-muted-foreground">Loading projects...</div>;
+  }
+
+  if (isError) {
+    return <div className="text-sm text-destructive">Failed to load projects.</div>;
+  }
 
   return (
     <div className="space-y-8">

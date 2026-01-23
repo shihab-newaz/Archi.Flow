@@ -6,5 +6,13 @@
 */
 
 import { authHandlers } from './handlers/auth'
+import { projectHandlers } from './handlers/projects'
+import { clientHandlers } from './handlers/clients'
+import { taskHandlers } from './handlers/tasks'
 
-export const handlers = [...authHandlers]
+export const handlers = [
+  ...authHandlers,
+  ...projectHandlers,
+  ...clientHandlers,
+  ...taskHandlers,
+]

@@ -1,3 +1,5 @@
+import type { Client, Project, Task } from '@/types'
+
 export interface MockUser {
   id: string
   name: string
@@ -62,3 +64,41 @@ export function createAuthResponse(
     message,
   }
 }
+
+const now = () => new Date().toISOString()
+
+export const createMockClient = (overrides: Partial<Client> = {}): Client => ({
+  id: overrides.id ?? Math.random().toString(36).slice(2, 9),
+  name: overrides.name ?? 'Alice Johnson',
+  email: overrides.email ?? 'alice@example.com',
+  phone: overrides.phone ?? '555-0101',
+  company: overrides.company,
+})
+
+export const createMockProject = (overrides: Partial<Project> = {}): Project => ({
+  id: overrides.id ?? Math.random().toString(36).slice(2, 9),
+  name: overrides.name ?? 'Modern Loft Renovation',
+  clientId: overrides.clientId ?? '1',
+  status: overrides.status ?? 'Active',
+  phase: overrides.phase ?? 'Design',
+  budget: overrides.budget ?? 150000,
+  startDate: overrides.startDate ?? '2023-10-01',
+  endDate: overrides.endDate,
+  address: overrides.address ?? '123 Main St, Cityville',
+  thumbnail: overrides.thumbnail,
+})
+
+export const createMockTask = (overrides: Partial<Task> = {}): Task => ({
+  id: overrides.id ?? Math.random().toString(36).slice(2, 9),
+  projectId: overrides.projectId ?? '1',
+  title: overrides.title ?? 'Finalize Floor Plan',
+  status: overrides.status ?? 'In Progress',
+  dueDate: overrides.dueDate ?? '2023-11-15',
+  assignee: overrides.assignee ?? 'Architect A',
+})
+
+export const createMockProfile = (overrides: Partial<MockUser> = {}) => ({
+  ...createMockUser({ role: 'admin' }),
+  ...overrides,
+  updatedAt: overrides.updatedAt ?? now(),
+})

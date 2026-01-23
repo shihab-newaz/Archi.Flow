@@ -25,7 +25,7 @@ import {
   type LoginPayload,
 } from '@/services'
 import type { ApiError } from '@/lib/apiClient'
-import { persistClientToken } from '@/lib/auth-helpers'
+import { persistClientToken } from '@/lib/auth-token'
 
 const LoginForm = () => {
   const router = useRouter()

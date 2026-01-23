@@ -20,9 +20,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Plus } from 'lucide-react'
-import { useState } from 'react'
-import { createTask } from '@/app/actions/task'
-import { useRouter } from 'next/navigation'
+import { useState, type FormEvent } from 'react'
+import { useCreateTaskMutation } from '@/services'
 import { toast } from 'sonner'
 import { TaskStatus } from '@/types'
 
@@ -38,31 +37,38 @@ export function NewTaskDialog({
   trigger,
 }: NewTaskDialogProps) {
   const [open, setOpen] = useState(false)
-  const router = useRouter()
+  const createTaskMutation = useCreateTaskMutation({
+    onSuccess: () => {
+      setOpen(false)
+      toast.success('Task created successfully')
+    },
+    onError: (error) => {
+      toast.error(
+        'Failed to create task' +
+          (error instanceof Error ? `: ${error.message}` : '.')
+      )
+    },
+  })
 
-  async function onSubmit(formData: FormData) {
+  function onSubmit(formData: FormData) {
     const title = formData.get('title') as string
     const dueDate = formData.get('dueDate') as string
     const assignee = formData.get('assignee') as string
     const status = formData.get('status') as TaskStatus
 
-    try {
-      await createTask({
-        projectId,
-        title,
-        dueDate,
-        assignee,
-        status,
-      })
-      setOpen(false)
-      toast.success('Task created successfully')
-      router.refresh()
-    } catch (error) {
-      toast.error(
-        'Failed to create task' +
-        (error instanceof Error ? `: ${error.message}` : '.')
-      )
-    }
+    createTaskMutation.mutate({
+      projectId,
+      title,
+      dueDate,
+      assignee,
+      status,
+    })
+  }
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    onSubmit(formData)
   }
 
   return (
@@ -82,7 +88,7 @@ export function NewTaskDialog({
             Create a task for this project phase.
           </DialogDescription>
         </DialogHeader>
-        <form action={onSubmit} className="space-y-4 mt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
             <Label htmlFor="title">Task Title</Label>
             <Input
@@ -119,7 +125,8 @@ export function NewTaskDialog({
           </div>
 
           <DialogFooter>
-            <Button type="submit" color="cyan">
+            <Button type="submit" color="cyan" isLoading={createTaskMutation.isPending}>
+              <Button.Spinner />
               <Button.Label>Create Task</Button.Label>
             </Button>
           </DialogFooter>

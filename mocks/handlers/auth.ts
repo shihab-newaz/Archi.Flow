@@ -1,5 +1,19 @@
 import { http, HttpResponse } from 'msw'
-import { createMockUser, createAuthResponse, getTokenForRole } from '../factories'
+import {
+  createMockUser,
+  createAuthResponse,
+  createMockProfile,
+  getTokenForRole,
+} from '../factories'
+
+let currentUser = createMockProfile({
+  name: 'Architect One',
+  email: 'architect@example.com',
+  role: 'admin',
+})
+
+const isAuthorized = (authHeader: string | null) =>
+  Boolean(authHeader && authHeader.startsWith('Bearer '))
 
 // Auth handlers (login, logout, profile)
 export const authHandlers = [
@@ -39,28 +53,84 @@ export const authHandlers = [
     return HttpResponse.json({ message: 'Logged out successfully' })
   }),
 
+  // POST /api/auth/register
+  http.post('/api/auth/register', async ({ request }) => {
+    const body = (await request.json()) as { name: string; email: string }
+    const user = createMockUser({
+      name: body.name ?? 'New User',
+      email: body.email ?? 'new@example.com',
+      role: 'student',
+    })
+    currentUser = { ...currentUser, ...user }
+    return HttpResponse.json(createAuthResponse(user, getTokenForRole('student')))
+  }),
+
   // GET /api/auth/profile
   http.get('/api/auth/profile', ({ request }) => {
     const authHeader = request.headers.get('Authorization')
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!isAuthorized(authHeader)) {
       return HttpResponse.json({ status: 401, message: 'Unauthorized' }, { status: 401 })
     }
 
-    const token = authHeader.replace('Bearer ', '')
+    return HttpResponse.json(currentUser)
+  }),
 
-    if (token === getTokenForRole('admin')) {
-      return HttpResponse.json(createMockUser({ email: 'admin@example.com', role: 'admin' }))
+  // PATCH /api/auth/profile
+  http.patch('/api/auth/profile', async ({ request }) => {
+    const authHeader = request.headers.get('Authorization')
+
+    if (!isAuthorized(authHeader)) {
+      return HttpResponse.json({ status: 401, message: 'Unauthorized' }, { status: 401 })
     }
 
-    if (token === getTokenForRole('teacher')) {
-      return HttpResponse.json(createMockUser({ email: 'teacher@example.com', role: 'teacher' }))
-    }
+    const updates = (await request.json()) as Partial<typeof currentUser>
+    currentUser = { ...currentUser, ...updates }
+    return HttpResponse.json(currentUser)
+  }),
 
-    if (token === getTokenForRole('student')) {
-      return HttpResponse.json(createMockUser({ email: 'student@example.com', role: 'student' }))
+  // POST /api/auth/forgot-password
+  http.post('/api/auth/forgot-password', async ({ request }) => {
+    const body = (await request.json()) as { email: string }
+    if (!body?.email) {
+      return HttpResponse.json({ message: 'Email is required' }, { status: 400 })
     }
+    return HttpResponse.json({ message: 'Password reset email sent' })
+  }),
 
-    return HttpResponse.json({ status: 401, message: 'Invalid token' }, { status: 401 })
+  // POST /api/auth/reset-password
+  http.post('/api/auth/reset-password', async ({ request }) => {
+    const body = (await request.json()) as { token: string }
+    if (!body?.token) {
+      return HttpResponse.json({ message: 'Reset token is required' }, { status: 400 })
+    }
+    return HttpResponse.json({ message: 'Password reset successful' })
+  }),
+
+  // POST /api/auth/change-password
+  http.post('/api/auth/change-password', async ({ request }) => {
+    const body = (await request.json()) as { currentPassword?: string; newPassword?: string }
+    if (!body?.currentPassword || !body?.newPassword) {
+      return HttpResponse.json({ message: 'Invalid password payload' }, { status: 400 })
+    }
+    return HttpResponse.json({ message: 'Password updated' })
+  }),
+
+  // POST /api/auth/verify-email
+  http.post('/api/auth/verify-email', async ({ request }) => {
+    const body = (await request.json()) as { token?: string }
+    if (!body?.token) {
+      return HttpResponse.json({ message: 'Verification token required' }, { status: 400 })
+    }
+    return HttpResponse.json({ message: 'Email verified' })
+  }),
+
+  // POST /api/auth/resend-verification
+  http.post('/api/auth/resend-verification', async ({ request }) => {
+    const body = (await request.json()) as { email?: string }
+    if (!body?.email) {
+      return HttpResponse.json({ message: 'Email required' }, { status: 400 })
+    }
+    return HttpResponse.json({ message: 'Verification email sent' })
   }),
 ]

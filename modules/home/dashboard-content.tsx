@@ -177,7 +177,7 @@ export default function Homepage() {
               key={course.id}
               className="overflow-hidden hover:shadow-lg transition-shadow"
             >
-              <div className="h-32 bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center">
+              <div className="h-32 bg-linear-to-br from-green-100 to-green-50 flex items-center justify-center">
                 <BookOpen className="w-12 h-12 text-green-600" />
               </div>
 

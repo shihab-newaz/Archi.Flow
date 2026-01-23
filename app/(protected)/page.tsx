@@ -1,10 +1,28 @@
-import { getProjects } from '@/app/actions/project';
+'use client'
+
+import { useProjectsQuery } from '@/services';
 import { ProjectCard } from '@/components/dashboard/ProjectCard';
 import { StatsOverview } from '@/components/dashboard/StatsOverview';
 import { PageTransition, StaggerItem } from '@/components/ui/PageTransition';
 
-export default async function DashboardPage() {
-  const projects = await getProjects();
+export default function DashboardPage() {
+  const { data: projects = [], isLoading, isError } = useProjectsQuery();
+
+  if (isLoading) {
+    return (
+      <PageTransition className="space-y-12 p-8">
+        <div className="text-sm text-muted-foreground">Loading dashboard...</div>
+      </PageTransition>
+    );
+  }
+
+  if (isError) {
+    return (
+      <PageTransition className="space-y-12 p-8">
+        <div className="text-sm text-destructive">Failed to load dashboard data.</div>
+      </PageTransition>
+    );
+  }
 
   return (
     <PageTransition className="space-y-12 p-8">

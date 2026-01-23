@@ -1,9 +1,19 @@
-import { getClients } from '@/app/actions/client';
+'use client'
+
+import { useClientsQuery } from '@/services';
 import { ClientCard } from '@/components/clients/ClientCard';
 import { NewClientSheet } from '@/components/clients/NewClientSheet';
 
-export default async function ClientsPage() {
-  const clients = await getClients();
+export default function ClientsPage() {
+  const { data: clients = [], isLoading, isError } = useClientsQuery();
+
+  if (isLoading) {
+    return <div className="text-sm text-muted-foreground">Loading clients...</div>;
+  }
+
+  if (isError) {
+    return <div className="text-sm text-destructive">Failed to load clients.</div>;
+  }
 
   return (
     <div className="space-y-8">

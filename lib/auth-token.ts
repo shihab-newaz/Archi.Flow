@@ -1,17 +1,6 @@
-/**
- * Client-side auth helpers
- *
- * This file contains client-only authentication utilities.
- * For server-side auth utilities, use '@/lib/auth-helpers-server'
- */
-
-import { redirect } from 'next/navigation'
-
-// Constants (can be used on both client and server)
 export const AUTH_COOKIE_NAME = 'lms.auth.token'
 const TOKEN_STORAGE_KEY = 'lms.auth.token'
 
-// Client-side utilities
 export const getClientToken = (): string | null => {
   if (typeof window === 'undefined') {
     return null
@@ -41,14 +30,3 @@ export const persistClientToken = (
 }
 
 export const clearClientToken = () => persistClientToken(null)
-
-export const isAuthenticatedClient = () => Boolean(getClientToken())
-
-// Client-side redirect utility (for client components)
-export const redirectToLogin = () => {
-  if (typeof window !== 'undefined') {
-    window.location.href = '/login'
-  } else {
-    redirect('/login')
-  }
-}
