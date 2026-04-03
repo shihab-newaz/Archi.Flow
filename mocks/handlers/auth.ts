@@ -65,6 +65,17 @@ export const authHandlers = [
     return HttpResponse.json(createAuthResponse(user, getTokenForRole('student')))
   }),
 
+  // POST /api/auth/refresh
+  http.post('/api/auth/refresh', async ({ request }) => {
+    const body = (await request.json()) as { refreshToken?: string }
+
+    if (!body?.refreshToken) {
+      return HttpResponse.json({ status: 400, message: 'Refresh token is required' }, { status: 400 })
+    }
+
+    return HttpResponse.json(createAuthResponse(currentUser, getTokenForRole(currentUser.role), 'Session refreshed'))
+  }),
+
   // GET /api/auth/profile
   http.get('/api/auth/profile', ({ request }) => {
     const authHeader = request.headers.get('Authorization')

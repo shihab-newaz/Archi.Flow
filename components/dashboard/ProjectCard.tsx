@@ -2,9 +2,9 @@
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Project } from '@/types';
+import { type Project } from '@/services';
 import Link from 'next/link';
-import { CalendarDays, DollarSign } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface ProjectCardProps {
@@ -13,6 +13,8 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
+  const statusVariant = project.status === 'IN_PROGRESS' ? 'default' : 'secondary';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -26,28 +28,22 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
               <CardTitle className="text-xl font-bold font-display truncate group-hover:text-primary transition-colors">
                 {project.name}
               </CardTitle>
-              <Badge variant={project.status === 'Active' ? 'default' : 'secondary'} className="font-mono uppercase text-xs tracking-wider rounded-none">
+              <Badge variant={statusVariant} className="font-mono uppercase text-xs tracking-wider rounded-none">
                 {project.status}
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="flex-1 space-y-4">
-            <div className="text-sm text-muted-foreground font-mono truncate">{project.address}</div>
-            <div className="flex items-center gap-2 text-sm">
-              <Badge variant="outline" className="rounded-none font-mono text-xs uppercase tracking-wider">
-                {project.phase}
-              </Badge>
+            <div className="text-sm text-muted-foreground line-clamp-2">
+              {project.description || 'No description provided.'}
             </div>
           </CardContent>
           <CardFooter className="border-t border-border/50 pt-4 text-sm text-muted-foreground flex justify-between font-mono">
             <div className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4" />
-              {new Date(project.startDate).toLocaleDateString()}
+              {project.startDate ? new Date(project.startDate).toLocaleDateString() : 'Not scheduled'}
             </div>
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
-              {project.budget.toLocaleString()}
-            </div>
+            <span>{project.totalTasks ?? 0} tasks</span>
           </CardFooter>
         </Card>
       </Link>

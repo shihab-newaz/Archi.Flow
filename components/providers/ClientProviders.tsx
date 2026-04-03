@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
 import { ThemeProvider } from 'next-themes'
 
+import AuthSessionHandler from '@/components/providers/AuthSessionHandler'
+
 export default function ClientProviders({ children }: PropsWithChildren) {
   const [queryClient] = useState(
     () =>
@@ -25,6 +27,7 @@ export default function ClientProviders({ children }: PropsWithChildren) {
   return (
     <ThemeProvider attribute="class" enableSystem defaultTheme="system">
       <QueryClientProvider client={queryClient}>
+        <AuthSessionHandler />
         {children}
         <Toaster />
       </QueryClientProvider>

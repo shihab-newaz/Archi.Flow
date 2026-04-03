@@ -25,7 +25,7 @@ import {
   type LoginPayload,
 } from '@/services'
 import type { ApiError } from '@/lib/apiClient'
-import { persistClientToken } from '@/lib/auth-token'
+import { persistClientAuthTokens, persistClientToken } from '@/lib/auth-token'
 
 const LoginForm = () => {
   const router = useRouter()
@@ -42,9 +42,20 @@ const LoginForm = () => {
   const loginMutation = useLoginMutation({
     onSuccess: (response: AuthResponse, variables: LoginPayload) => {
       // Persist the token if provided
-      if (response?.token) {
+      const accessToken = response.tokens?.accessToken
+      const refreshToken = response.tokens?.refreshToken
+
+      if (accessToken && refreshToken) {
         const maxAge = variables.rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24 * 7 // 30 days if remember me, otherwise 7 days
-        persistClientToken(response.token, maxAge)
+        persistClientAuthTokens(
+          {
+            accessToken,
+            refreshToken,
+          },
+          maxAge
+        )
+      } else if (accessToken) {
+        persistClientToken(accessToken)
       }
 
       toast.success(

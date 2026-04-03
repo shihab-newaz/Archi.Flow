@@ -1,16 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Project } from '@/types';
-import { Activity, CheckCircle, Clock, DollarSign } from 'lucide-react';
+import { type Project } from '@/services';
+import { Activity, CheckCircle, Clock, ListTodo } from 'lucide-react';
 
 interface StatsOverviewProps {
   projects: Project[];
 }
 
 export function StatsOverview({ projects }: StatsOverviewProps) {
-  const activeProjects = projects.filter((p) => p.status === 'Active').length;
-  const completedProjects = projects.filter((p) => p.status === 'Completed').length;
-  const totalBudget = projects.reduce((acc, p) => acc + p.budget, 0);
-  const pendingPermits = projects.filter((p) => p.phase === 'Permitting').length;
+  const activeProjects = projects.filter((p) => p.status === 'IN_PROGRESS').length;
+  const completedProjects = projects.filter((p) => p.status === 'COMPLETED').length;
+  const planningProjects = projects.filter((p) => p.status === 'PLANNING').length;
+  const totalOpenTasks = projects.reduce((acc, p) => acc + (p.openTasks ?? 0), 0);
 
   const stats = [
     {
@@ -20,16 +20,16 @@ export function StatsOverview({ projects }: StatsOverviewProps) {
       description: 'Currently in progress',
     },
     {
-      title: 'Total Budget',
-      value: `$${totalBudget.toLocaleString()}`,
-      icon: DollarSign,
-      description: 'Across all projects',
+      title: 'Open Tasks',
+      value: totalOpenTasks,
+      icon: ListTodo,
+      description: 'Across loaded projects',
     },
     {
-      title: 'Pending Permits',
-      value: pendingPermits,
+      title: 'Planning',
+      value: planningProjects,
       icon: Clock,
-      description: 'Awaiting approval',
+      description: 'Waiting to start',
     },
     {
       title: 'Completed',

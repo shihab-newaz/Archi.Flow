@@ -13,6 +13,8 @@ export * from './modules/finance'
 export * from './modules/projects'
 export * from './modules/clients'
 export * from './modules/tasks'
+export * from './modules/payments'
+export * from './modules/activity'
 
 /**
  * Re-export commonly used types and utilities
@@ -35,3 +37,5 @@ export { financeQueryKeys } from './modules/finance'
 export { projectQueryKeys } from './modules/projects'
 export { clientQueryKeys } from './modules/clients'
 export { taskQueryKeys } from './modules/tasks'
+export { paymentQueryKeys } from './modules/payments'
+export { activityQueryKeys } from './modules/activity'

@@ -60,7 +60,10 @@ export function createAuthResponse(
 ) {
   return {
     user,
-    token: token ?? getTokenForRole(user.role),
+    tokens: {
+      accessToken: token ?? getTokenForRole(user.role),
+      refreshToken: `mock-refresh-token-${user.role}`,
+    },
     message,
   }
 }

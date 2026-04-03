@@ -10,9 +10,18 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, FolderKanban, Users, Settings } from 'lucide-react';
+import {
+  ClipboardList,
+  CreditCard,
+  FolderKanban,
+  LayoutDashboard,
+  Settings,
+  ShieldCheck,
+  Users,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useProfileQuery } from '@/services';
 
 const items = [
   {
@@ -35,10 +44,36 @@ const items = [
     url: '/settings',
     icon: Settings,
   },
+  {
+    title: 'Users',
+    url: '/settings/users',
+    icon: ShieldCheck,
+    adminOnly: true,
+  },
+  {
+    title: 'Payments',
+    url: '/payments',
+    icon: CreditCard,
+    adminOnly: true,
+  },
+  {
+    title: 'Activity',
+    url: '/settings/activity',
+    icon: ClipboardList,
+    adminOnly: true,
+  },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { data: currentUser } = useProfileQuery();
+
+  const visibleItems = items.filter((item) => {
+    if (!item.adminOnly) {
+      return true;
+    }
+    return currentUser?.role === 'ADMIN';
+  });
 
   return (
     <Sidebar className="border-r border-border bg-sidebar">
@@ -50,7 +85,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {visibleItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link href={item.url}>

@@ -11,9 +11,14 @@ export interface AuthUser extends BaseEntity {
   avatarUrl?: string | null
 }
 
+export interface AuthTokens {
+  accessToken: string
+  refreshToken: string
+}
+
 export interface AuthResponse {
   user: AuthUser
-  token?: string
+  tokens: AuthTokens
   message?: string
 }
 
@@ -25,6 +30,10 @@ export interface LoginPayload {
   email: string
   password: string
   rememberMe?: boolean
+}
+
+export interface RefreshTokenPayload {
+  refreshToken: string
 }
 
 export interface RegisterPayload {
@@ -50,6 +59,8 @@ export interface ChangePasswordPayload {
   confirmPassword: string
 }
 
+type ProfileResponse = AuthUser | { user: AuthUser }
+
 /**
  * Query Keys
  */
@@ -74,6 +85,11 @@ export const authEndpoints = {
       requiresAuth: false,
     }),
 
+  refresh: (payload: RefreshTokenPayload) =>
+    apiService.post<AuthResponse>('/api/auth/refresh', payload, {
+      requiresAuth: false,
+    }),
+
   logout: () =>
     apiService.post<LogoutResponse>('/api/auth/logout', undefined, {
       requiresAuth: true,
@@ -81,9 +97,11 @@ export const authEndpoints = {
 
   // Profile management
   getProfile: () =>
-    apiService.get<AuthUser>('/api/auth/profile', {
-      requiresAuth: true,
-    }),
+    apiService
+      .get<ProfileResponse>('/api/auth/profile', {
+        requiresAuth: true,
+      })
+      .then((response) => ('user' in response ? response.user : response)),
 
   updateProfile: (payload: Partial<AuthUser>) =>
     apiService.patch<AuthUser>('/api/auth/profile', payload, {

@@ -1,22 +1,71 @@
 'use client';
 
-import { Task, TaskStatus } from '@/types';
+import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  useDeleteTaskMutation,
+  useUpdateTaskMutation,
+  type Task,
+  type TaskStatus,
+} from '@/services';
 import { NewTaskDialog } from '@/components/projects/NewTaskDialog';
+import { Button } from '@/components/custom/Button';
 
 interface TaskBoardProps {
   tasks: Task[];
-  projectId: string;
+  phaseId: string;
 }
 
 const columns: { title: string; status: TaskStatus }[] = [
-  { title: 'To Do', status: 'To Do' },
-  { title: 'In Progress', status: 'In Progress' },
-  { title: 'Done', status: 'Done' },
+  { title: 'To Do', status: 'TODO' },
+  { title: 'In Progress', status: 'IN_PROGRESS' },
+  { title: 'Done', status: 'DONE' },
 ];
 
-export function TaskBoard({ tasks, projectId }: TaskBoardProps) {
+export function TaskBoard({ tasks, phaseId }: TaskBoardProps) {
+  const updateTaskMutation = useUpdateTaskMutation({
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : 'Failed to update task.');
+    },
+  });
+
+  const deleteTaskMutation = useDeleteTaskMutation({
+    onSuccess: () => {
+      toast.success('Task removed.');
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : 'Failed to delete task.');
+    },
+  });
+
+  const updateStatus = (task: Task, status: TaskStatus) => {
+    if (status === task.status) {
+      return;
+    }
+
+    updateTaskMutation.mutate({
+      id: task.id,
+      status,
+    });
+  };
+
+  const removeTask = (task: Task) => {
+    const confirmed = window.confirm(`Delete task \"${task.title}\"?`);
+    if (!confirmed) {
+      return;
+    }
+
+    deleteTaskMutation.mutate(task.id);
+  };
+
   return (
     <div className="grid gap-6 md:grid-cols-3 h-full">
       {columns.map((col) => {
@@ -37,18 +86,48 @@ export function TaskBoard({ tasks, projectId }: TaskBoardProps) {
                      <CardTitle className="text-sm font-medium">{task.title}</CardTitle>
                    </CardHeader>
                    <CardContent className="p-4 pt-0">
-                     <div className="flex justify-between items-center text-xs text-muted-foreground mt-2">
-                       <span>{new Date(task.dueDate).toLocaleDateString()}</span>
-                       {task.assignee && (
-                         <span className="bg-secondary px-1.5 py-0.5 rounded">
-                           {task.assignee}
+                     <div className="space-y-2 text-xs text-muted-foreground mt-2">
+                       <div className="flex justify-between items-center">
+                         <span>
+                           {task.dueDate
+                             ? new Date(task.dueDate).toLocaleDateString()
+                             : 'No due date'}
                          </span>
-                       )}
+                         {task.assigneeName && (
+                           <span className="bg-secondary px-1.5 py-0.5 rounded">
+                             {task.assigneeName}
+                           </span>
+                         )}
+                       </div>
+
+                       <div className="flex items-center gap-2">
+                         <Select
+                           value={task.status}
+                           onValueChange={(value) => updateStatus(task, value as TaskStatus)}
+                         >
+                           <SelectTrigger className="h-8 w-full text-xs">
+                             <SelectValue />
+                           </SelectTrigger>
+                           <SelectContent>
+                             <SelectItem value="TODO">TODO</SelectItem>
+                             <SelectItem value="IN_PROGRESS">IN_PROGRESS</SelectItem>
+                             <SelectItem value="DONE">DONE</SelectItem>
+                           </SelectContent>
+                         </Select>
+
+                         <Button color="pink" variant="ghost" size="sm" onClick={() => removeTask(task)}>
+                           <Button.Label>Delete</Button.Label>
+                         </Button>
+                       </div>
+
+                       <div className="flex justify-between items-center">
+                         <span>Priority {task.priority}</span>
+                       </div>
                      </div>
                    </CardContent>
                  </Card>
                ))}
-               <NewTaskDialog projectId={projectId} defaultStatus={col.status} />
+               <NewTaskDialog phaseId={phaseId} defaultStatus={col.status} />
             </div>
           </div>
         );

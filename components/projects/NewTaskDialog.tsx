@@ -21,22 +21,24 @@ import {
 } from '@/components/ui/select'
 import { Plus } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
-import { useCreateTaskMutation } from '@/services'
+import { useCreateTaskMutation, type TaskStatus, useUsersQuery } from '@/services'
 import { toast } from 'sonner'
-import { TaskStatus } from '@/types'
 
 interface NewTaskDialogProps {
-  projectId: string
+  phaseId: string
   defaultStatus?: TaskStatus
   trigger?: React.ReactNode
 }
 
 export function NewTaskDialog({
-  projectId,
-  defaultStatus = 'To Do',
+  phaseId,
+  defaultStatus = 'TODO',
   trigger,
 }: NewTaskDialogProps) {
   const [open, setOpen] = useState(false)
+  const { data: usersResponse } = useUsersQuery({ page: 1, limit: 100, includeInactive: false })
+  const users = usersResponse?.data ?? []
+
   const createTaskMutation = useCreateTaskMutation({
     onSuccess: () => {
       setOpen(false)
@@ -52,15 +54,19 @@ export function NewTaskDialog({
 
   function onSubmit(formData: FormData) {
     const title = formData.get('title') as string
+    const description = formData.get('description') as string
     const dueDate = formData.get('dueDate') as string
-    const assignee = formData.get('assignee') as string
+    const assignedTo = formData.get('assignedTo') as string
+    const priority = Number(formData.get('priority') as string)
     const status = formData.get('status') as TaskStatus
 
     createTaskMutation.mutate({
-      projectId,
+      phaseId,
       title,
-      dueDate,
-      assignee,
+      description: description || undefined,
+      dueDate: dueDate || undefined,
+      assignedTo: assignedTo || undefined,
+      priority,
       status,
     })
   }
@@ -81,7 +87,7 @@ export function NewTaskDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106">
         <DialogHeader>
           <DialogTitle>Add New Task</DialogTitle>
           <DialogDescription>
@@ -99,10 +105,15 @@ export function NewTaskDialog({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Input id="description" name="description" placeholder="Task details (optional)" />
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="dueDate">Due Date</Label>
-              <Input id="dueDate" name="dueDate" type="date" required />
+              <Input id="dueDate" name="dueDate" type="date" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
@@ -111,17 +122,32 @@ export function NewTaskDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="To Do">To Do</SelectItem>
-                  <SelectItem value="In Progress">In Progress</SelectItem>
-                  <SelectItem value="Done">Done</SelectItem>
+                  <SelectItem value="TODO">TODO</SelectItem>
+                  <SelectItem value="IN_PROGRESS">IN_PROGRESS</SelectItem>
+                  <SelectItem value="DONE">DONE</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="priority">Priority</Label>
+              <Input id="priority" name="priority" type="number" min={1} max={5} defaultValue={3} required />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="assignee">Assignee (Optional)</Label>
-            <Input id="assignee" name="assignee" placeholder="e.g. John Doe" />
+            <Label htmlFor="assignedTo">Assignee (Optional)</Label>
+            <Select name="assignedTo">
+              <SelectTrigger>
+                <SelectValue placeholder="Select user" />
+              </SelectTrigger>
+              <SelectContent>
+                {users.map((user) => (
+                  <SelectItem key={user.id} value={user.id}>
+                    {user.name || user.email}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <DialogFooter>

@@ -22,11 +22,12 @@ import { Plus } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { useCreateProjectMutation } from '@/services'
 import { toast } from 'sonner'
-import type { ProjectPhase, ProjectStatus } from '@/types'
+import type { ProjectStatus } from '@/services'
 
 // Define a type for project phases to replace 'any'
 export function NewProjectSheet() {
   const [open, setOpen] = useState(false)
+  const [status, setStatus] = useState<ProjectStatus>('PLANNING')
   const createProjectMutation = useCreateProjectMutation({
     onSuccess: () => {
       setOpen(false)
@@ -42,21 +43,16 @@ export function NewProjectSheet() {
 
   function onSubmit(formData: FormData) {
     const name = formData.get('name') as string
-    const address = formData.get('address') as string
-    const budget = Number(formData.get('budget'))
+    const description = formData.get('description') as string
     const startDate = formData.get('startDate') as string
-    const phaseValue = formData.get('phase') as string
-    const phase = phaseValue as ProjectPhase
-    const status: ProjectStatus = 'Active'
+    const endDate = formData.get('endDate') as string
 
     createProjectMutation.mutate({
       name,
-      address,
-      budget,
-      startDate,
-      phase,
+      description: description || undefined,
       status,
-      clientId: '1',
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
     })
   }
 
@@ -74,7 +70,7 @@ export function NewProjectSheet() {
           <Button.Label>New Project</Button.Label>
         </Button>
       </SheetTrigger>
-      <SheetContent className="sm:max-w-[540px]">
+      <SheetContent className="sm:max-w-135">
         <SheetHeader>
           <SheetTitle>Create New Project</SheetTitle>
           <SheetDescription>
@@ -93,43 +89,35 @@ export function NewProjectSheet() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address">Site Address</Label>
+            <Label htmlFor="description">Description</Label>
             <Input
-              id="address"
-              name="address"
-              placeholder="123 Main St, City"
-              required
+              id="description"
+              name="description"
+              placeholder="e.g. Residential high-rise renovation"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="budget">Budget ($)</Label>
-              <Input
-                id="budget"
-                name="budget"
-                type="number"
-                placeholder="150000"
-                required
-              />
+              <Label htmlFor="startDate">Start Date</Label>
+              <Input id="startDate" name="startDate" type="date" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="startDate">Start Date</Label>
-              <Input id="startDate" name="startDate" type="date" required />
+              <Label htmlFor="endDate">End Date</Label>
+              <Input id="endDate" name="endDate" type="date" />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phase">Initial Phase</Label>
-            <Select name="phase" defaultValue="Concept" required>
+            <Label htmlFor="status">Status</Label>
+            <Select value={status} onValueChange={(value) => setStatus(value as ProjectStatus)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select phase" />
+                <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Concept">Concept</SelectItem>
-                <SelectItem value="Design">Design</SelectItem>
-                <SelectItem value="Permitting">Permitting</SelectItem>
-                <SelectItem value="Construction">Construction</SelectItem>
+                <SelectItem value="PLANNING">PLANNING</SelectItem>
+                <SelectItem value="IN_PROGRESS">IN_PROGRESS</SelectItem>
+                <SelectItem value="COMPLETED">COMPLETED</SelectItem>
               </SelectContent>
             </Select>
           </div>

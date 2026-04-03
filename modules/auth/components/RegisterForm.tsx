@@ -20,6 +20,7 @@ import { toast } from 'sonner'
 import { registerSchema, type RegisterFormValues } from '@/modules/auth/schemas'
 import { useRegisterMutation, type AuthResponse } from '@/services'
 import type { ApiError } from '@/lib/apiClient'
+import { persistClientAuthTokens, persistClientToken } from '@/lib/auth-token'
 
 const RegisterForm = () => {
   const router = useRouter()
@@ -37,6 +38,15 @@ const RegisterForm = () => {
     onSuccess: (response: AuthResponse) => {
       toast.success('Account created! Your profile is ready to go.')
 
+      const accessToken = response.tokens?.accessToken
+      const refreshToken = response.tokens?.refreshToken
+
+      if (accessToken && refreshToken) {
+        persistClientAuthTokens({ accessToken, refreshToken })
+      } else if (accessToken) {
+        persistClientToken(accessToken)
+      }
+
       form.reset({
         name: '',
         email: response.user.email,
@@ -44,8 +54,8 @@ const RegisterForm = () => {
         confirmPassword: '',
       })
 
-      if (response.token) {
-        router.push('/dashboard')
+      if (accessToken) {
+        router.push('/')
       } else {
         router.push('/login')
       }
